@@ -1,0 +1,35 @@
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\appsettings.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.staticwebassets.endpoints.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.exe
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.deps.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.runtimeconfig.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Monitor economic.pdb
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.csproj.AssemblyReference.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.AssemblyInfoInputs.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.AssemblyInfo.cs
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.csproj.CoreCompileInputs.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\scopedcss\bundle\Monitor economic.styles.css
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor .0A7B5B6D.Up2Date
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\refint\Monitor economic.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.pdb
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.genruntimeconfig.cache
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\ref\Monitor economic.dll

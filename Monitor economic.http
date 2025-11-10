@@ -1,0 +1,6 @@
+@Monitor_economic_HostAddress = http://localhost:5297
+
+GET {{Monitor_economic_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
