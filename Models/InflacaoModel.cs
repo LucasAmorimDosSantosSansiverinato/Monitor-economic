@@ -1,6 +1,6 @@
 ﻿namespace Monitor_economic.Models
 {
-    public class Inflacao
+    public class InflacaoModel
     {
     }
 }

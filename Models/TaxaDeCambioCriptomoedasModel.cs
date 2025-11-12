@@ -1,6 +1,6 @@
 ﻿namespace Monitor_economic.Models
 {
-    public class TaxaDeCambioCriptomoedas
+    public class TaxaDeCambioCriptomoedasModel
     {
     }
 }
