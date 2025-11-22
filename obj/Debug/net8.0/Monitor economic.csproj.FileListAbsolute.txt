@@ -33,3 +33,4 @@ C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\n
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.pdb
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.genruntimeconfig.cache
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\ref\Monitor economic.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.sourcelink.json

@@ -1,4 +1,4 @@
-﻿namespace Monitor_economic.Models
+﻿namespace Monitor_economic.Domain.Models
 {
     public class CombustiveisModel
     {
