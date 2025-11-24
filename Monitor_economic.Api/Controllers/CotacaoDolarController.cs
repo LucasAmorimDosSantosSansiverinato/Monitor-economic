@@ -1,21 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Monitor_economic.Monitor_economic.Infrastructure.Services;
+using Monitor_economic.Monitor_economic.Application.Interfaces.Service;
+
 
 namespace Monitor_economic.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/cotacao/dolar")]
     public class CotacaoDolarController : ControllerBase
     {
-        private readonly CotacaoDolarService _service;
+        private readonly ICotacaoService _service;
 
-        public CotacaoDolarController(CotacaoDolarService service)
+        public CotacaoDolarController(ICotacaoService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCotacoes([FromQuery] string dataInicial, [FromQuery] string dataFinal)
+        public async Task<IActionResult> GetCotacoes( string dataInicial, string dataFinal)
         {
             var resultado = await _service.ObterCotacaoAsync(dataInicial, dataFinal);
 
