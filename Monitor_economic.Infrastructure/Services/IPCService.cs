@@ -12,20 +12,22 @@ namespace Monitor_economic.Monitor_economic.Infrastructure.Services
             _httpClient = httpClient;
         }
 
-        public async Task<IPCDto> ObterIPCAsync(string dataInicial, string dataFinal)
+        public async Task<List<ItemIPCDto>?> ObterIPCAsync(string dataInicial, string dataFinal)
         {
             string url = $"https://api.bcb.gov.br/dados/serie/bcdata.sgs." +
                 $"{7463}/dados?formato=json&dataInicial={dataInicial}&dataFinal={dataFinal}";
 
             try
             {
-                return await _httpClient.GetFromJsonAsync<IPCDto>(url);
+                return await _httpClient.GetFromJsonAsync<List<ItemIPCDto>>(url);
 
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine($"Erro ao obter IPC:  + {ex.Message}");
                 return null;
             }
 
+        }
     }
 }

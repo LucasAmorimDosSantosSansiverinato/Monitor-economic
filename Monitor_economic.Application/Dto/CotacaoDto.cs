@@ -1,7 +1,10 @@
-﻿namespace Monitor_economic.Application.Dto
+﻿using Monitor_economic.Monitor_economic.Application.Dto;
+
+namespace Monitor_economic.Application.Dto
 {
     public class CotacaoDto
     {
-        public List<CotacaoDto> Value { get; set; } = new();
+        public List<ItemCotacaoDto> value { get; set; } = new();
+
     }
 }

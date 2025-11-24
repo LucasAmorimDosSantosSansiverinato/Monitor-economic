@@ -1,6 +1,25 @@
-﻿namespace Monitor_economic.Monitor_economic.Api.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using Monitor_economic.Application.UseCases;
+
+[ApiController]
+[Route("api/ipc")]
+public class IPCController : ControllerBase
 {
-    public interface IPCCotroller
+    private readonly ObterIPCUseCase _useCase;
+
+    public IPCController(ObterIPCUseCase useCase)
     {
+        _useCase = useCase;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetIPC(string dataInicial, string dataFinal)
+    {
+        var resultado = await _useCase.criaModel(dataInicial, dataFinal);
+
+        if (resultado == null)
+            return BadRequest("Erro ao buscar dados da API IPC.");
+
+        return Ok(resultado);
     }
 }

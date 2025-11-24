@@ -1,8 +1,8 @@
 ﻿namespace Monitor_economic.Monitor_economic.Domain.Models
 {
-    public interface IPCModel
+    public class IPCModel
     {
-        public string dataHora { get; set; }
+        public DateTime data { get; set; }
         public decimal valor { get; set; }
     }
 }

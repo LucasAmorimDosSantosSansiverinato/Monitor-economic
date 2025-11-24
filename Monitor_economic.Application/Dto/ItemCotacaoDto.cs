@@ -2,5 +2,8 @@
 {
     public class ItemCotacaoDto
     {
+        public decimal cotacaoCompra { get; set; }
+        public decimal cotacaoVenda { get; set; }
+        public string dataHoraCotacao { get; set; } = string.Empty;
     }
 }
