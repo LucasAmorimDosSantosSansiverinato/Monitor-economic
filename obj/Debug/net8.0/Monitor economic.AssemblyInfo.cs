@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Monitor economic")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e93f04d67b9915b64fc11edda14cd4a7ebf9ed99")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f99536ed429492ad49677248fc43bd9f0ddb5cff")]
 [assembly: System.Reflection.AssemblyProductAttribute("Monitor economic")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Monitor economic")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
