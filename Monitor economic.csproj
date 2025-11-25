@@ -10,5 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
+	<ItemGroup>
+		<Folder Include="1-Monitor_econimic.Domain\" />
+		<Folder Include="2-Monitor_economic.Application\" />
+		<Folder Include="3-Monitor_economic.Infrastructure\" />
+		<Folder Include="4-Monitor_economic.Api\" />
+	</ItemGroup>
+
 
 </Project>
