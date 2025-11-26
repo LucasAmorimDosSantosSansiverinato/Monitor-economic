@@ -8,14 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Supabase" Version="1.1.1" />
+    <PackageReference Include="Supabase.Postgrest" Version="4.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
   </ItemGroup>
-	<ItemGroup>
-		<Folder Include="1-Monitor_econimic.Domain\" />
-		<Folder Include="2-Monitor_economic.Application\" />
-		<Folder Include="3-Monitor_economic.Infrastructure\" />
-		<Folder Include="4-Monitor_economic.Api\" />
-	</ItemGroup>
 
 
 </Project>

@@ -13,7 +13,7 @@ public class IPCController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetIPC(string dataInicial, string dataFinal)
+    public async Task<IActionResult> getIPC(string dataInicial, string dataFinal)
     {
         var resultado = await _useCase.criaModel(dataInicial, dataFinal);
 

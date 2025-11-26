@@ -26,7 +26,6 @@ C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\n
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor .0A7B5B6D.Up2Date
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.dll
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\refint\Monitor economic.dll
@@ -34,3 +33,20 @@ C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\n
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.genruntimeconfig.cache
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\ref\Monitor economic.dll
 C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\obj\Debug\net8.0\Monitor economic.sourcelink.json
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\MimeMapping.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Core.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Functions.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Gotrue.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Postgrest.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Realtime.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Supabase.Storage.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\System.Reactive.dll
+C:\Users\Lucas\OneDrive\Documentos\Monitor economic\Monitor economic\bin\Debug\net8.0\Websocket.Client.dll

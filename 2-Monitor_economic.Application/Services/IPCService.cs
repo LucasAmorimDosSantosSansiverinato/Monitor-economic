@@ -12,7 +12,7 @@ namespace Monitor_economic.Monitor_economic.Infrastructure.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<ItemIPCDto>?> ObterIPCAsync(string dataInicial, string dataFinal)
+        public async Task<List<ItemIPCDto>?> obterIPCAsync(string dataInicial, string dataFinal)
         {
             string url = $"https://api.bcb.gov.br/dados/serie/bcdata.sgs." +
                 $"{7463}/dados?formato=json&dataInicial={dataInicial}&dataFinal={dataFinal}";

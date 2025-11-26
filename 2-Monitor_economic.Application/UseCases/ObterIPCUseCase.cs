@@ -1,4 +1,5 @@
-﻿using Monitor_economic.Monitor_economic.Application.Interfaces.Service;
+﻿using Monitor_economic._1_Monitor_econimic.Domain.Interfaces.IRepository;
+using Monitor_economic.Monitor_economic.Application.Interfaces.Service;
 using Monitor_economic.Monitor_economic.Domain.Models;
 
 namespace Monitor_economic.Application.UseCases
@@ -6,15 +7,16 @@ namespace Monitor_economic.Application.UseCases
     public class ObterIPCUseCase
     {
         private readonly IIPCService _ipcService;
-
-        public ObterIPCUseCase(IIPCService ipcService)
+        private readonly IIPCRepository _ipcRepository;
+        public ObterIPCUseCase(IIPCService ipcService, IIPCRepository ipcRepository)
         {
             _ipcService = ipcService;
+            _ipcRepository = ipcRepository;
         }
 
         public async Task<List<IPCModel>> criaModel(string dataInicial, string dataFinal)    
         {
-            var dtos = await _ipcService.ObterIPCAsync(dataInicial, dataFinal);
+            var dtos = await _ipcService.obterIPCAsync(dataInicial, dataFinal);
             if (dtos == null) return new();
 
             var listaModels = new List<IPCModel>();
@@ -26,6 +28,8 @@ namespace Monitor_economic.Application.UseCases
                 model.valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
 
                 listaModels.Add(model);
+
+                await _ipcRepository.salvarAsync(model);
             }
 
             return listaModels;
