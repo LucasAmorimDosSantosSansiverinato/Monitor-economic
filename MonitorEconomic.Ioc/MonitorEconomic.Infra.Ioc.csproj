@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
+    <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
+    <ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />
+  </ItemGroup>
+
+</Project>
