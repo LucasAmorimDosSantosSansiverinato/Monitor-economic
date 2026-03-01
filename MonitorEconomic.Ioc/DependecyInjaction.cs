@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Application.Interfaces.Service;
 using MonitorEconomic.Application.UseCases;
-using MonitorEconomic.Domain.Interfaces;
 using MonitorEconomic.Infra.Data.Clients;
 using MonitorEconomic.Infra.Data.Repository;
 using MonitorEconomic.Infra.Data.Services;
@@ -16,12 +16,11 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddSingleton<SupabaseClientFactory>();
+
         services.AddScoped<IIPCRepository, IPCRepository>();
 
-        // UseCase
         services.AddScoped<ObterIPCUseCase>();
 
-        // ✅ Serviço HTTP usando HttpClientFactory
         services.AddHttpClient<IIPCService, IPCService>();
 
         return services;

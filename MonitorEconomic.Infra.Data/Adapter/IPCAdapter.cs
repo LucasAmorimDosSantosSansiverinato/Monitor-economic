@@ -1,6 +1,6 @@
-﻿using MonitorEconomic.Domain.Entities;
+﻿using MonitorEconomic.Application.Dto;
+using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Exceptions;
-using MonitorEconomic.Infra.Data.Dto;
 using System.Globalization;
 
 namespace MonitorEconomic.Infra.Data.Adapter;

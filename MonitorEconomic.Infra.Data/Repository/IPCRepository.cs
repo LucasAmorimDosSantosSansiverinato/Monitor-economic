@@ -1,5 +1,5 @@
-﻿using MonitorEconomic.Domain.Entities;
-using MonitorEconomic.Domain.Interfaces;
+﻿using MonitorEconomic.Domain.Interfaces.IRepository;
+using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Infra.Data.Clients;
 using MonitorEconomic.Infra.Data.Models;
 
@@ -18,11 +18,8 @@ public class IPCRepository : IIPCRepository
     {
         var client = await _factory.GetClientAsync();
 
-        IPCModel model = new IPCModel
-        {
-            Data = ipcBaseModel.Data,
-            Valor = ipcBaseModel.Valor
-        };
+        IPCModel model = IPCMapper.ToModel(ipcBaseModel);
+        
 
         await client.From<IPCModel>().Insert(model);
     }
@@ -37,7 +34,7 @@ public class IPCRepository : IIPCRepository
 
         foreach (var model in response.Models)
         {
-            IPCBaseModel entidade = new IPCBaseModel(model.Data, model.Valor);
+            IPCBaseModel entidade = IPCMapper.ToDomain(model);
             lista.Add(entidade);
         }
 

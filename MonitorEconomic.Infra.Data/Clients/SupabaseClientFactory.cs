@@ -1,6 +1,7 @@
-using Supabase;
+
 using Microsoft.Extensions.Options;
 using MonitorEconomic.Infra.Data.Configuration;
+using Supabase;
 
 namespace MonitorEconomic.Infra.Data.Clients
 {

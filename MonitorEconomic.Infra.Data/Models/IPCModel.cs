@@ -10,8 +10,17 @@ public class IPCModel : BaseModel
     public int Id { get; set; }
 
     [Column("data")]
-    public DateTime Data { get; set; }
+    public new DateTime Data { get; set; }
 
     [Column("valor")]
-    public decimal Valor { get; set; }
+    public new decimal Valor { get; set; }
+
+    public IPCModel() { }
+    public IPCModel(DateTime data, decimal valor)
+       
+    {
+        Data = data;
+        Valor = valor;
+    }
+
 }

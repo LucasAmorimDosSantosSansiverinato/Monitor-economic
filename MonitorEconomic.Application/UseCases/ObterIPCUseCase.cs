@@ -1,6 +1,7 @@
 ﻿using MonitorEconomic.Domain.Entities;
-using MonitorEconomic.Domain.Interfaces;
+
 using MonitorEconomic.Application.Interfaces.Service;
+using MonitorEconomic.Domain.Interfaces.IRepository;
 
 
 namespace MonitorEconomic.Application.UseCases;

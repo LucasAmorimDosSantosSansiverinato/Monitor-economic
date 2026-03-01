@@ -1,6 +1,8 @@
-﻿namespace Monitor_economic._2_Monitor_economic.Application.Exception
+﻿namespace MonitorEconomic.Domain.Exceptions
 {
-    public class DomainException
+    public class DomainException : Exception
     {
+        public DomainException(string message) : base(message) { }
+        public DomainException(string message, Exception inner) : base(message, inner) { }
     }
 }

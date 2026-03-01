@@ -24,7 +24,7 @@ public static class IPCMapper
 
         IPCModel model = new IPCModel();
 
-        model.Data = entity.Data;
+        model.Data = entity.data;
         model.Valor = entity.Valor;
 
         return model;
