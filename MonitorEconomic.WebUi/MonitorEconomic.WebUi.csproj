@@ -13,4 +13,8 @@
 		<ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.0" />
+  </ItemGroup>
+
 </Project>
