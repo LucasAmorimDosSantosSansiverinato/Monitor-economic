@@ -15,8 +15,18 @@ namespace MonitorEconomic.Infra.Data.Services
 
         public async Task<List<ItemIPCDto>?> obterIPCAsync(string dataInicial, string dataFinal)
         {
+
+            var dataInicialFormatada = DateTime
+            .Parse(dataInicial)
+            .ToString("dd/MM/yyyy");
+
+            var dataFinalFormatada = DateTime
+            .Parse(dataFinal)
+            .ToString("dd/MM/yyyy");
+
+
             string url = $"https://api.bcb.gov.br/dados/serie/bcdata.sgs." +
-                $"{7463}/dados?formato=json&dataInicial={dataInicial}&dataFinal={dataFinal}";
+                $"{7463}/dados?formato=json&dataInicial={dataInicialFormatada}&dataFinal={dataFinalFormatada}";
 
             try
             {
