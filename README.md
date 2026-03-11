@@ -40,23 +40,19 @@ O PostgreSQL estará rodando na porta 5432.
 💡 A API aplica as migrations automaticamente ao iniciar, então se a tabela ipc não existir, ela será criada.
 
 4️⃣ Acessar o PostgreSQL e ver as tabelas
+
 4.1 Entrar no container do banco
+
 docker exec -it monitor_economic_db psql -U postgres -d monitor_economic
+
 4.2 Listar todas as tabelas
+
 \dt
 
-Deve aparecer:
-
-   public   | ipc      | table | postgres
-4.3 Visualizar dados da tabela ipc
-SELECT * FROM ipc;
-
-Retorna todos os registros armazenados via API.
-
-Inicialmente estará vazio.
-
 4.4 Sair do psql
+
 \q
+
 5️⃣ Usar a API
 
 A API possui endpoints para consultar e armazenar IPC.
@@ -79,7 +75,9 @@ docker compose down
 Listar tabelas e registros direto (sem entrar no psql):
 
 docker exec -it monitor_economic_db psql -U postgres -d monitor_economic -c "\dt"
+
 docker exec -it monitor_economic_db psql -U postgres -d monitor_economic -c "SELECT * FROM ipc;"
+
 7️⃣ Estrutura do projeto
 
 MonitorEconomic.WebUi → Projeto ASP.NET API
