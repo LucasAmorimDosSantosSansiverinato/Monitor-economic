@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Application.Interfaces.Service;
 using MonitorEconomic.Application.UseCases;
-using MonitorEconomic.Infra.Data.Clients;
+// using MonitorEconomic.Infra.Data.Clients;
 using MonitorEconomic.Infra.Data.Repository;
 using MonitorEconomic.Infra.Data.Services;
 
@@ -15,7 +15,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddSingleton<SupabaseClientFactory>();
+       // services.AddSingleton<SupabaseClientFactory>();
 
         services.AddScoped<IIPCRepository, IPCRepository>();
 

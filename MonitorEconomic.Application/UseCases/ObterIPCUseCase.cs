@@ -29,22 +29,32 @@ namespace MonitorEconomic.Application.UseCases;
 
         foreach (var dto in dtos)
         {
-            Console.WriteLine($"Data: {dto.data}, Valor: {dto.valor}"); // <-- Aqui você vê cada registro
+            Console.WriteLine($"Data: {dto.data}, Valor: {dto.valor}"); 
         }
 
         var listaModels = new List<IPCBaseModel>();
 
-            foreach (var dto in dtos)
-            {
+            // foreach (var dto in dtos)
+            // {
 
-                var data = DateTime.Parse(dto.data);
-                var valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
+            //     var data = DateTime.Parse(dto.data);
+            //     var valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
                 
-                var model = new IPCBaseModel(data, valor);
+            //     var model = new IPCBaseModel(data, valor);
 
-                listaModels.Add(model);
-                await _ipcRepository.salvarAsync(model);
-            }
+            //     listaModels.Add(model);
+            //     await _ipcRepository.salvarAsync(model);
+            // }
+
+            foreach (var dto in dtos)
+{
+    var data = DateTime.SpecifyKind(DateTime.Parse(dto.data), DateTimeKind.Utc);
+    var valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
+
+    var model = new IPCBaseModel(data, valor);
+    listaModels.Add(model);
+    await _ipcRepository.salvarAsync(model); // já vai salvar em UTC
+}
 
             return listaModels;
         }

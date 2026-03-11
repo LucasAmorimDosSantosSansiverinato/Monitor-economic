@@ -5,15 +5,16 @@ namespace MonitorEconomic.Domain.Entities;
 public class IPCBaseModel
 {
     public int Id { get; private set; }
-    public DateTime data { get; private set; }
+    public DateTime Data { get; private set; }
     public decimal Valor { get; private set; }
 
+    public IPCBaseModel(){}
     public IPCBaseModel(DateTime data, decimal valor)
     {
         if (data > DateTime.UtcNow)
             throw new DomainException("A data não pode ser futura.");
 
-        data = data;
+        Data = data;
         Valor = valor;
     }
 
@@ -27,6 +28,6 @@ public class IPCBaseModel
         if (novaData > DateTime.UtcNow)
             throw new DomainException("A data não pode ser futura.");
 
-        data = novaData;
+        Data = novaData;
     }
 }
