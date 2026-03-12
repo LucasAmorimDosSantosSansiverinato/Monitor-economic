@@ -8,13 +8,6 @@ Docker e Docker Compose instalados
 
 .NET SDK 8.0
 
-Git (opcional para clonar o projeto)
-
-1️⃣ Clonar o projeto
-git clone <URL_DO_SEU_REPOSITORIO>
-cd Monitor-economic
-2️⃣ Configurar variáveis de ambiente
-
 Crie um arquivo .env na raiz do projeto:
 
 POSTGRES_DB=monitor_economic
@@ -23,6 +16,7 @@ POSTGRES_PASSWORD=postgres123
 
 ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=monitor_economic;Username=postgres;Password=postgres123
 ASPNETCORE_ENVIRONMENT=Development
+
 3️⃣ Rodar com Docker Compose
 
 O projeto já contém:
