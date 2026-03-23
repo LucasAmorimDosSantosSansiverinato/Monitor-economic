@@ -17,8 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
   </ItemGroup>
 
 </Project>
+
+
+//-- - a aplicapcalication só scoonhece o dominio, e a infra tb só conhece o doiminio,.data

@@ -16,7 +16,7 @@ namespace MonitorEconomic.Application.UseCases;
             _ipcRepository = ipcRepository;
         }
 
-        public async Task<List<IPCBaseModel>> criaModel(string dataInicial, string dataFinal)    
+        public async Task<List<IPCBaseDomain>> criaModel(string dataInicial, string dataFinal)    
         {
             var dtos = await _ipcService.obterIPCAsync(dataInicial, dataFinal);
         if (dtos == null)
@@ -32,7 +32,7 @@ namespace MonitorEconomic.Application.UseCases;
             Console.WriteLine($"Data: {dto.data}, Valor: {dto.valor}"); 
         }
 
-        var listaModels = new List<IPCBaseModel>();
+        var listaModels = new List<IPCBaseDomain>();
 
             // foreach (var dto in dtos)
             // {
@@ -51,7 +51,7 @@ namespace MonitorEconomic.Application.UseCases;
     var data = DateTime.SpecifyKind(DateTime.Parse(dto.data), DateTimeKind.Utc);
     var valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
 
-    var model = new IPCBaseModel(data, valor);
+    var model = new IPCBaseDomain(data, valor);
     listaModels.Add(model);
     await _ipcRepository.salvarAsync(model); // já vai salvar em UTC
 }

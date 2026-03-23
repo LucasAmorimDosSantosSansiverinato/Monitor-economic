@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-//using MonitorEconomic.Infra.Data.Models;
-using MonitorEconomic.Infra.Data.Entities;
+using MonitorEconomic.Domain.Entities;
+
 
 public class MonitorEconomicDbContext : DbContext
 {
@@ -13,7 +13,7 @@ public class MonitorEconomicDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<IPCEntity>().ToTable("ipc");
+        modelBuilder.Entity<IPCBaseDomain>().ToTable("ipc");
         modelBuilder.Entity<IPCEntity>().HasKey("Id");
 
         modelBuilder.Entity<IPCEntity>()
@@ -23,3 +23,5 @@ public class MonitorEconomicDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
 }
+
+// vou mudar essa classe, vou conectar ela com banco de dados postgres, essa classe vai ser o contexto de integração com o banco de dados, ela deve ser inchuta para criar apenas esse contexto

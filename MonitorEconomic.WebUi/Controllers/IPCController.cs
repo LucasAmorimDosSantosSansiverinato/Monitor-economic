@@ -45,3 +45,6 @@ public class IPCController : ControllerBase
         return Ok(resultado);
     }
 }
+
+
+// camada de apresentação vai conhecer apenas a IOC, vai receber o json, transformar ele em um DTO, já vai vir na mesma assinatura, no momento que passar para o application ainda vai ser um DTO, o adapter vai transformar esse DTO em uma entidade do domínio, e na application vai ter uma injeção do medieitor como 
