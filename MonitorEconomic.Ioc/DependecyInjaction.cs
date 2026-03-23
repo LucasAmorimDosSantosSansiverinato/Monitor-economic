@@ -15,11 +15,10 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-       // services.AddSingleton<SupabaseClientFactory>();
+    
+        services.addTransient<IIPCRepository, IPCRepository>();
 
-        services.AddScoped<IIPCRepository, IPCRepository>();
-
-        services.AddScoped<ObterIPCUseCase>();
+        services.AddTransient<ObterIPCUseCase>();
 
         services.AddHttpClient<IIPCService, IPCService>();
 

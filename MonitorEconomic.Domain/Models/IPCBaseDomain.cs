@@ -8,7 +8,6 @@ public class IPCBaseDomain
     public DateTime Data { get; private set; }
     public decimal Valor { get; private set; }
 
-    public IPCBaseDomain(){}
     public IPCBaseDomain(DateTime data, decimal valor)
     {
         if (data > DateTime.UtcNow)
