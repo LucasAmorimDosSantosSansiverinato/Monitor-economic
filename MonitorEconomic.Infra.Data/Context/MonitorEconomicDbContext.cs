@@ -1,27 +1,117 @@
-using Microsoft.EntityFrameworkCore;
-using MonitorEconomic.Domain.Entities;
+using Npgsql;
 
+namespace MonitorEconomic.Infrastructure.Data.Context;
 
-public class MonitorEconomicDbContext : DbContext
+/// <summary>
+/// Contexto de acesso ao banco de dados PostgreSQL.
+/// Gerencia a conexão com o banco de dados sem usar ORM.
+/// </summary>
+public class MonitorEconomicDbContext : IDisposable
 {
-    public MonitorEconomicDbContext(DbContextOptions<MonitorEconomicDbContext> options)
-        : base(options)
+    private readonly string _connectionString;
+    private NpgsqlConnection? _connection;
+
+    public MonitorEconomicDbContext(string connectionString)
     {
+        _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
 
-    public DbSet<IPCEntity> IPC { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    /// <summary>
+    /// Obtém uma conexão aberta com o banco de dados.
+    /// </summary>
+    public NpgsqlConnection GetConnection()
     {
-        modelBuilder.Entity<IPCBaseDomain>().ToTable("ipc");
-        modelBuilder.Entity<IPCEntity>().HasKey("Id");
+        if (_connection == null)
+        {
+            _connection = new NpgsqlConnection(_connectionString);
+        }
 
-        modelBuilder.Entity<IPCEntity>()
-            .Property(e => e.Data)
-            .HasColumnType("timestamp without time zone");
+        if (_connection.State == System.Data.ConnectionState.Closed)
+        {
+            _connection.Open();
+        }
 
-        base.OnModelCreating(modelBuilder);
+        return _connection;
+    }
+
+    /// <summary>
+    /// Executa um comando SQL retornando um reader.
+    /// </summary>
+    public NpgsqlDataReader ExecuteReader(string sql, params NpgsqlParameter[] parameters)
+    {
+        var command = GetConnection().CreateCommand();
+        command.CommandText = sql;
+        
+        if (parameters.Length > 0)
+        {
+            command.Parameters.AddRange(parameters);
+        }
+
+        return command.ExecuteReader();
+    }
+
+    /// <summary>
+    /// Executa um comando SQL retornando um scalar.
+    /// </summary>
+    public object? ExecuteScalar(string sql, params NpgsqlParameter[] parameters)
+    {
+        var command = GetConnection().CreateCommand();
+        command.CommandText = sql;
+        
+        if (parameters.Length > 0)
+        {
+            command.Parameters.AddRange(parameters);
+        }
+
+        return command.ExecuteScalar();
+    }
+
+    /// <summary>
+    /// Executa um comando SQL não-query (INSERT, UPDATE, DELETE).
+    /// </summary>
+    public int ExecuteNonQuery(string sql, params NpgsqlParameter[] parameters)
+    {
+        var command = GetConnection().CreateCommand();
+        command.CommandText = sql;
+        
+        if (parameters.Length > 0)
+        {
+            command.Parameters.AddRange(parameters);
+        }
+
+        return command.ExecuteNonQuery();
+    }
+
+    /// <summary>
+    /// Inicia uma transação no banco de dados.
+    /// </summary>
+    public NpgsqlTransaction BeginTransaction()
+    {
+        return GetConnection().BeginTransaction();
+    }
+
+    /// <summary>
+    /// Testa a conexão com o banco de dados.
+    /// </summary>
+    public async Task<bool> TestConnectionAsync()
+    {
+        try
+        {
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public void Dispose()
+    {
+        _connection?.Close();
+        _connection?.Dispose();
     }
 }
-
-// vou mudar essa classe, vou conectar ela com banco de dados postgres, essa classe vai ser o contexto de integra��o com o banco de dados, ela deve ser inchuta para criar apenas esse contexto

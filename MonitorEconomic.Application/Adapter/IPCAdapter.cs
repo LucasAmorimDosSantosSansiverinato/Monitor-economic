@@ -1,17 +1,25 @@
-﻿using MonitorEconomic.Application.Dto;
+﻿using AutoMapper;
+using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Domain.Entities;
-using MonitorEconomic.Domain.Exceptions;
-using System.Globalization;
 
 namespace MonitorEconomic.Infra.Data.Adapter;
 
-    public class IPCAdapter // sem nescessidade de ser estática
+public class IPCAdapter
 {
-        public IPCBaseDomain ToDomain(ItemIPCDto dto)
-        {
-            return new IPCBaseDomain(data, valor);
-        }
+    private readonly IMapper _mapper;
+
+    public IPCAdapter(IMapper mapper)
+    {
+        _mapper = mapper;
     }
 
+    public IPCBaseDomain ToDomain(ItemIPCDto dto)
+    {
+        return _mapper.Map<IPCBaseDomain>(dto);
+    }
 
-// procurar usar automapper, só baixar o pacote e colocar ele na injeção de dependencias
+    public ItemIPCDto ToDto(IPCBaseDomain domain)
+    {
+        return _mapper.Map<ItemIPCDto>(domain);
+    }
+}

@@ -1,4 +1,16 @@
 using MediatR;
 using MonitorEconomic.Application.Dto;
 
-public class GetIPCQuery : IRequest<List<ItemIPCDto>>{}
+namespace MonitorEconomic.Application.Mediator.IPC.Queries;
+
+public class GetIPCQuery : IRequest<List<ItemIPCDto>>
+{
+    public string DataInicial { get; set; }
+    public string DataFinal { get; set; }
+
+    public GetIPCQuery(string dataInicial, string dataFinal)
+    {
+        DataInicial = dataInicial;
+        DataFinal = dataFinal;
+    }
+}

@@ -1,30 +1,21 @@
 using MediatR;
-using MonitorEconomic.Domain.Interfaces.IRepository;
+using MonitorEconomic.Application.Interfaces.Service;
 using MonitorEconomic.Application.Dto;
+using MonitorEconomic.Application.Mediator.IPC.Queries;
 
-public class GetIPCHandler : IRequestHandler<GetIPCQuery, List<ItemIPCDto>>{
-    private readonly IIPCRepository _repository;
+namespace MonitorEconomic.Application.Mediator.IPC.Handler;
 
-    public GetIPCHandler(IIPCRepository repository)
+public class GetIPCHandler : IRequestHandler<GetIPCQuery, List<ItemIPCDto>>
+{
+    private readonly IIPCService _ipcService;
+
+    public GetIPCHandler(IIPCService ipcService)
     {
-        _repository = repository;
+        _ipcService = ipcService;
     }
 
-    public async Task<List<ItemIPCDto>> Handler(GetIPCQuery request, CancellationToken cancellationToken)
+    public async Task<List<ItemIPCDto>> Handle(GetIPCQuery request, CancellationToken cancellationToken)
     {
-        var dados = await _repository.ObterIPC();
-
-        var lista = new List<ItemIPCDto>();
-
-        foreach (var item in dados)
-        {
-            var dto = new ItemIPCDto();
-            dto.valor = item.valor;
-            dto.data = item.data;
-
-            lista.Add(dto);
-        }
-    } 
-
-
+        return await _ipcService.obterIPCAsync(request.DataInicial, request.DataFinal) ?? new List<ItemIPCDto>();
+    }
 }

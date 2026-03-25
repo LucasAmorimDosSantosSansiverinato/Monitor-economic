@@ -1,13 +1,12 @@
 ﻿using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-
+using MonitorEconomic.Infrastructure.Data.Context;
+using Npgsql;
 
 namespace MonitorEconomic.Infra.Data.Repository;
 
 public class IPCRepository : IIPCRepository
 {
-
     private readonly MonitorEconomicDbContext _context;
 
     public IPCRepository(MonitorEconomicDbContext context)
@@ -16,31 +15,35 @@ public class IPCRepository : IIPCRepository
     }
 
     public async Task salvarAsync(IPCBaseDomain ipcBaseModel)
-{
-    var data = ipcBaseModel.Data;
-
-    // remover UTC
-    if (data.Kind == DateTimeKind.Utc)
-        data = DateTime.SpecifyKind(data, DateTimeKind.Unspecified);
-
-    var entity = new IPCBaseDomain
     {
-        Data = data,
-        Valor = ipcBaseModel.Valor
-    };
+        const string sql = "INSERT INTO ipc (data, valor) VALUES (@data, @valor)";
+        
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@data", ipcBaseModel.Data),
+            new NpgsqlParameter("@valor", ipcBaseModel.Valor)
+        };
 
-    _context.IPC.Add(entity);
-    await _context.SaveChangesAsync();
-}
-
+        _context.ExecuteNonQuery(sql, parameters);
+        await Task.CompletedTask;
+    }
 
     public async Task<List<IPCBaseDomain>> obterTodosAsync()
     {
-        var entities = await _context.IPC.ToListAsync();
+        const string sql = "SELECT data, valor FROM ipc ORDER BY data DESC";
+        
+        var lista = new List<IPCBaseDomain>();
 
-        // Cria IPCBaseModel usando o construtor
-        var lista = entities.Select(e => new IPCBaseDomain(e.Data, e.Valor)).ToList();
+        using (var reader = _context.ExecuteReader(sql))
+        {
+            while (reader.Read())
+            {
+                var data = reader.GetDateTime(0);
+                var valor = reader.GetDecimal(1);
+                lista.Add(new IPCBaseDomain(data, valor));
+            }
+        }
 
-        return lista;
+        return await Task.FromResult(lista);
     }
 }

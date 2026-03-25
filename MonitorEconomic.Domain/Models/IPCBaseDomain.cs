@@ -1,18 +1,24 @@
 ﻿using MonitorEconomic.Domain.Exceptions;
+using System.Data;
 
 namespace MonitorEconomic.Domain.Entities;
 
 public class IPCBaseDomain
 {
-    public int Id { get; private set; }
     public DateTime Data { get; private set; }
     public decimal Valor { get; private set; }
 
     public IPCBaseDomain(DateTime data, decimal valor)
     {
+        if (data == DateTime.MinValue)
+        {
+            throw new DomainException("Data não pode ser vazia");
+        }
         if (data > DateTime.UtcNow)
+        { 
             throw new DomainException("A data não pode ser futura.");
-
+        }
+        
         Data = data;
         Valor = valor;
     }
@@ -30,5 +36,3 @@ public class IPCBaseDomain
         Data = novaData;
     }
 }
-
-// deixar a representação do banco de dados na domain

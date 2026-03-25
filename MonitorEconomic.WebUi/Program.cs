@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using MonitorEconomic.Infra.Ioc;
-//using MonitorEconomic.Infra.Data.Models;
-using MonitorEconomic.Infra.Data.Entities;
+using MonitorEconomic.Infrastructure.Data.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 // -------------------------------
 // 3️⃣ DbContext
 // -------------------------------
-builder.Services.AddDbContext<MonitorEconomicDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddScoped(sp => new MonitorEconomicDbContext(connectionString ?? throw new InvalidOperationException("Connection string is null")));
 
 // -------------------------------
 // 4️⃣ Injeção de Dependência
@@ -40,16 +37,7 @@ builder.Services.AddDependencies(builder.Configuration);
 var app = builder.Build();
 
 // -------------------------------
-// 5️⃣ Executa migrations automaticamente
-// -------------------------------
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<MonitorEconomicDbContext>();
-    db.Database.Migrate();
-}
-
-// -------------------------------
-// 6️⃣ Swagger
+// 5️⃣ Swagger
 // -------------------------------
 if (app.Environment.IsDevelopment())
 {
