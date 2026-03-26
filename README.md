@@ -1,4 +1,8 @@
-<img width="1449" height="1142" alt="image" src="https://github.com/user-attachments/assets/aace90c8-12fe-4eb6-8777-f62a73303173" />
+Diagrama de blocos:
+
+<img width="1575" height="1198" alt="image" src="https://github.com/user-attachments/assets/4df30b69-f7be-4385-9a54-5fada629e1fe" />
+
+Arquitetura de soluções:
 
 <img width="1046" height="510" alt="image" src="https://github.com/user-attachments/assets/bb7ff5f6-7eb2-44af-a000-c40d1aa0248d" />
 
