@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MonitorEconomic.Application.Mediator.IPC.Queries;
+using MonitorEconomic.Application.Mediator.IPC.Commands;
+using MonitorEconomic.Domain.Interfaces.IRepository;
 
 
 [ApiController]
@@ -8,10 +10,12 @@ using MonitorEconomic.Application.Mediator.IPC.Queries;
 public class IPCController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IIPCRepository _ipcRepository;
 
-    public IPCController(IMediator mediator)
+    public IPCController(IMediator mediator, IIPCRepository ipcRepository)
     {
         _mediator = mediator;
+        _ipcRepository = ipcRepository;
     }
 
     [HttpGet]
@@ -26,7 +30,28 @@ public class IPCController : ControllerBase
 
         return Ok(resultado);
     }
-}
+
+    [HttpPost("store")]
+    public async Task<IActionResult> storeIPC(string dataInicial, string dataFinal)
+    {
+        var command = new CreateIPCCommand(dataInicial, dataFinal);
+        var resultado = await _mediator.Send(command);
+
+        if (resultado == null || resultado.Count == 0)
+            return BadRequest("Erro ao obter e salvar dados IPC. Verifique datas e conexão à API externa.");
+
+        return Ok(resultado);
+    }
+    [HttpGet("db")]
+    public async Task<IActionResult> getIPCFromDatabase()
+    {
+        var registros = await _ipcRepository.obterTodosAsync();
+
+        if (registros == null || registros.Count == 0)
+            return NotFound("Nenhum registro de IPC encontrado no banco.");
+
+        return Ok(registros);
+    }}
 
 
 // camada de apresentação vai conhecer apenas a IOC, vai receber o json, transformar ele em um DTO, já vai vir na mesma assinatura, no momento que passar para o application ainda vai ser um DTO, o adapter vai transformar esse DTO em uma entidade do domínio, e na application vai ter uma injeção do medieitor como 

@@ -16,7 +16,7 @@ public class IPCRepository : IIPCRepository
 
     public async Task salvarAsync(IPCBaseDomain ipcBaseModel)
     {
-        const string sql = "INSERT INTO ipc (data, valor) VALUES (@data, @valor)";
+        const string sql = "INSERT INTO ipc (\"Data\", \"Valor\") VALUES (@data, @valor)";
         
         var parameters = new[]
         {
@@ -30,7 +30,7 @@ public class IPCRepository : IIPCRepository
 
     public async Task<List<IPCBaseDomain>> obterTodosAsync()
     {
-        const string sql = "SELECT data, valor FROM ipc ORDER BY data DESC";
+        const string sql = "SELECT \"Data\", \"Valor\" FROM ipc ORDER BY \"Data\" DESC";
         
         var lista = new List<IPCBaseDomain>();
 

@@ -16,13 +16,14 @@ namespace MonitorEconomic.Infra.Data.Services
         public async Task<List<ItemIPCDto>?> obterIPCAsync(string dataInicial, string dataFinal)
         {
 
-            var dataInicialFormatada = DateTime
-            .Parse(dataInicial)
-            .ToString("dd/MM/yyyy");
+            if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var dataInicialParsed))
+                throw new ArgumentException("data Inicial deve estar com formato em dd/MM/yyyy", nameof(dataInicial));
 
-            var dataFinalFormatada = DateTime
-            .Parse(dataFinal)
-            .ToString("dd/MM/yyyy");
+            if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var dataFinalParsed))
+                throw new ArgumentException("data Final deve estar com formato em dd/MM/yyyy", nameof(dataFinal));
+
+            var dataInicialFormatada = dataInicialParsed.ToString("dd/MM/yyyy");
+            var dataFinalFormatada = dataFinalParsed.ToString("dd/MM/yyyy");
 
 
             string url = $"https://api.bcb.gov.br/dados/serie/bcdata.sgs." +

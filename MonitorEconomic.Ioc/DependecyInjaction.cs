@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Application.Interfaces.Service;
-using MonitorEconomic.Application.UseCases;
 using MonitorEconomic.Infra.Data.Repository;
 using MonitorEconomic.Infra.Data.Services;
 using MonitorEconomic.Application.Mediator.IPC.Handler;
@@ -19,8 +18,6 @@ public static class DependencyInjection
     {
     
         services.AddTransient<IIPCRepository, IPCRepository>();
-
-        services.AddTransient<ObterIPCUseCase>();
 
         services.AddHttpClient<IIPCService, IPCService>();
 
