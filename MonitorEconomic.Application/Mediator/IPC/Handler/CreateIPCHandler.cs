@@ -3,6 +3,7 @@ using MonitorEconomic.Application.Interfaces.Service;
 using MonitorEconomic.Application.Mediator.IPC.Commands;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Interfaces.IRepository;
+using AutoMapper;
 
 namespace MonitorEconomic.Application.Mediator.IPC.Handler;
 
@@ -10,11 +11,13 @@ public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCBaseDo
 {
     private readonly IIPCService _ipcService;
     private readonly IIPCRepository _ipcRepository;
+    private readonly IMapper _mapper;
 
-    public CreateIPCHandler(IIPCService ipcService, IIPCRepository ipcRepository)
+    public CreateIPCHandler(IIPCService ipcService, IIPCRepository ipcRepository, IMapper mapper)
     {
         _ipcService = ipcService;
         _ipcRepository = ipcRepository;
+        _mapper = mapper;
     }
 
     public async Task<List<IPCBaseDomain>> Handle(CreateIPCCommand request, CancellationToken cancellationToken)
@@ -34,16 +37,11 @@ public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCBaseDo
             Console.WriteLine($"Data: {dto.data}, Valor: {dto.valor}");
         }
 
-        var listaModels = new List<IPCBaseDomain>();
+        var listaModels = _mapper.Map<List<IPCBaseDomain>>(dtos);
 
-        foreach (var dto in dtos)
+        foreach (var model in listaModels)
         {
-            var data = DateTime.SpecifyKind(DateTime.Parse(dto.data), DateTimeKind.Utc);
-            var valor = decimal.Parse(dto.valor, System.Globalization.CultureInfo.InvariantCulture);
-
-            var model = new IPCBaseDomain(data, valor);
-            listaModels.Add(model);
-            await _ipcRepository.salvarAsync(model); // já vai salvar em UTC
+            await _ipcRepository.salvarAsync(model);
         }
 
         return listaModels;
