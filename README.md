@@ -1,3 +1,5 @@
+<img width="1449" height="1142" alt="image" src="https://github.com/user-attachments/assets/aace90c8-12fe-4eb6-8777-f62a73303173" />
+
 MonitorEconomic
 
 API para consultar e armazenar IPC (Índice de Preços ao Consumidor) usando .NET 8, Entity Framework Core, PostgreSQL e Docker.
