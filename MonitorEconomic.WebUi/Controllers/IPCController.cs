@@ -19,7 +19,7 @@ public class IPCController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> getIPC(string dataInicial, string dataFinal)
+    public async Task<IActionResult> getIPC([FromQuery] string dataInicial, [FromQuery] string dataFinal)
     {
         var query = new GetIPCQuery(dataInicial, dataFinal);
 
@@ -32,7 +32,7 @@ public class IPCController : ControllerBase
     }
 
     [HttpPost("store")]
-    public async Task<IActionResult> storeIPC(string dataInicial, string dataFinal)
+    public async Task<IActionResult> storeIPC([FromQuery] string dataInicial, [FromQuery] string dataFinal)
     {
         var command = new CreateIPCCommand(dataInicial, dataFinal);
         var resultado = await _mediator.Send(command);

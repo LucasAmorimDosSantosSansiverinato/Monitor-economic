@@ -24,8 +24,17 @@ public class IPCRepository : IIPCRepository
             new NpgsqlParameter("@valor", ipcBaseModel.Valor)
         };
 
-        _context.ExecuteNonQuery(sql, parameters);
-        await Task.CompletedTask;
+        try
+        {
+            var linhasAfetadas = _context.ExecuteNonQuery(sql, parameters);
+            Console.WriteLine($"✅ IPC Salvo: Data={ipcBaseModel.Data}, Valor={ipcBaseModel.Valor}, Linhas afetadas={linhasAfetadas}");
+            await Task.CompletedTask;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"❌ Erro ao salvar IPC: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<List<IPCBaseDomain>> obterTodosAsync()
