@@ -4,7 +4,7 @@ namespace MonitorEconomic.Domain.Interfaces.IRepository
 {
     public interface IIPCRepository
     {
-        Task salvarAsync(IPCBaseDomain ipcBaseModel);
-        Task<List<IPCBaseDomain>> obterTodosAsync();
+        Task salvarAsync(IPCDomain ipcBaseModel);
+        Task<List<IPCDomain>> obterTodosAsync();
     }
 }

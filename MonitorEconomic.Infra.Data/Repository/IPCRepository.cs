@@ -14,7 +14,7 @@ public class IPCRepository : IIPCRepository
         _context = context;
     }
 
-    public async Task salvarAsync(IPCBaseDomain ipcBaseModel)
+    public async Task salvarAsync(IPCDomain ipcBaseModel)
     {
         const string sql = "INSERT INTO ipc (\"Data\", \"Valor\") VALUES (@data, @valor)";
         
@@ -37,11 +37,11 @@ public class IPCRepository : IIPCRepository
         }
     }
 
-    public async Task<List<IPCBaseDomain>> obterTodosAsync()
+    public async Task<List<IPCDomain>> obterTodosAsync()
     {
         const string sql = "SELECT \"Data\", \"Valor\" FROM ipc ORDER BY \"Data\" DESC";
         
-        var lista = new List<IPCBaseDomain>();
+        var lista = new List<IPCDomain>();
 
         using (var reader = _context.ExecuteReader(sql))
         {
@@ -49,7 +49,7 @@ public class IPCRepository : IIPCRepository
             {
                 var data = reader.GetDateTime(0);
                 var valor = reader.GetDecimal(1);
-                lista.Add(new IPCBaseDomain(data, valor));
+                lista.Add(new IPCDomain(data, valor));
             }
         }
 

@@ -3,12 +3,12 @@ using System.Data;
 
 namespace MonitorEconomic.Domain.Entities;
 
-public class IPCBaseDomain
+public class IPCDomain
 {
     public DateTime Data { get; private set; }
     public decimal Valor { get; private set; }
 
-    public IPCBaseDomain(DateTime data, decimal valor)
+    public IPCDomain(DateTime data, decimal valor)
     {
         if (data == DateTime.MinValue)
         {

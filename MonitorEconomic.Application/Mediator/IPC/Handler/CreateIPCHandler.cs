@@ -7,7 +7,7 @@ using AutoMapper;
 
 namespace MonitorEconomic.Application.Mediator.IPC.Handler;
 
-public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCBaseDomain>>
+public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCDomain>>
 {
     private readonly IIPCService _ipcService;
     private readonly IIPCRepository _ipcRepository;
@@ -20,7 +20,7 @@ public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCBaseDo
         _mapper = mapper;
     }
 
-    public async Task<List<IPCBaseDomain>> Handle(CreateIPCCommand request, CancellationToken cancellationToken)
+    public async Task<List<IPCDomain>> Handle(CreateIPCCommand request, CancellationToken cancellationToken)
     {
         var dtos = await _ipcService.obterIPCAsync(request.DataInicial, request.DataFinal);
         
@@ -37,7 +37,7 @@ public class CreateIPCHandler : IRequestHandler<CreateIPCCommand, List<IPCBaseDo
             Console.WriteLine($"Data: {dto.data}, Valor: {dto.valor}");
         }
 
-        var listaModels = _mapper.Map<List<IPCBaseDomain>>(dtos);
+        var listaModels = _mapper.Map<List<IPCDomain>>(dtos);
 
         foreach (var model in listaModels)
         {

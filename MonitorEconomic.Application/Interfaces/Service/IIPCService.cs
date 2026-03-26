@@ -4,6 +4,6 @@ namespace MonitorEconomic.Application.Interfaces.Service
 {
     public interface IIPCService
     {
-        Task<List<ItemIPCDto>?> obterIPCAsync(string dataInicial, string dataFinal);
+        Task<List<IPCDto>?> obterIPCAsync(string dataInicial, string dataFinal);
     }
 }

@@ -5,7 +5,7 @@ using MonitorEconomic.Application.Mediator.IPC.Queries;
 
 namespace MonitorEconomic.Application.Mediator.IPC.Handler;
 
-public class GetIPCHandler : IRequestHandler<GetIPCQuery, List<ItemIPCDto>>
+public class GetIPCHandler : IRequestHandler<GetIPCQuery, List<IPCDto>>
 {
     private readonly IIPCService _ipcService;
 
@@ -14,8 +14,8 @@ public class GetIPCHandler : IRequestHandler<GetIPCQuery, List<ItemIPCDto>>
         _ipcService = ipcService;
     }
 
-    public async Task<List<ItemIPCDto>> Handle(GetIPCQuery request, CancellationToken cancellationToken)
+    public async Task<List<IPCDto>> Handle(GetIPCQuery request, CancellationToken cancellationToken)
     {
-        return await _ipcService.obterIPCAsync(request.DataInicial, request.DataFinal) ?? new List<ItemIPCDto>();
+        return await _ipcService.obterIPCAsync(request.DataInicial, request.DataFinal) ?? new List<IPCDto>();
     }
 }

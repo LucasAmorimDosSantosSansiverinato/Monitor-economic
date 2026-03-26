@@ -2,7 +2,7 @@
 using MonitorEconomic.Application.Interfaces.Service;
 using System.Net.Http.Json;
 
-namespace MonitorEconomic.Infra.Data.Services
+namespace MonitorEconomic.Application.Services
 {
     public class IPCService : IIPCService
     {
@@ -13,7 +13,7 @@ namespace MonitorEconomic.Infra.Data.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<ItemIPCDto>?> obterIPCAsync(string dataInicial, string dataFinal)
+        public async Task<List<IPCDto>?> obterIPCAsync(string dataInicial, string dataFinal)
         {
 
             if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var dataInicialParsed))
@@ -31,7 +31,7 @@ namespace MonitorEconomic.Infra.Data.Services
 
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<ItemIPCDto>>(url);
+                return await _httpClient.GetFromJsonAsync<List<IPCDto>>(url);
                
        
             }

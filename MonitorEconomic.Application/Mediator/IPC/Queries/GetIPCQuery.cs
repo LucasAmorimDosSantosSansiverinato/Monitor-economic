@@ -3,7 +3,7 @@ using MonitorEconomic.Application.Dto;
 
 namespace MonitorEconomic.Application.Mediator.IPC.Queries;
 
-public class GetIPCQuery : IRequest<List<ItemIPCDto>>
+public class GetIPCQuery : IRequest<List<IPCDto>>
 {
     public string DataInicial { get; set; }
     public string DataFinal { get; set; }
