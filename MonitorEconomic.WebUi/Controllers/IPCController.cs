@@ -10,12 +10,10 @@ using MonitorEconomic.Domain.Interfaces.IRepository;
 public class IPCController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IIPCRepository _ipcRepository;
 
     public IPCController(IMediator mediator, IIPCRepository ipcRepository)
     {
         _mediator = mediator;
-        _ipcRepository = ipcRepository;
     }
 
     [HttpGet]
@@ -45,7 +43,8 @@ public class IPCController : ControllerBase
     [HttpGet("db")]
     public async Task<IActionResult> getIPCFromDatabase()
     {
-        var registros = await _ipcRepository.obterTodosAsync();
+        var query = new GetAllIPCQuery();
+        var registros = await _mediator.Send(query);
 
         if (registros == null || registros.Count == 0)
             return NotFound("Nenhum registro de IPC encontrado no banco.");
