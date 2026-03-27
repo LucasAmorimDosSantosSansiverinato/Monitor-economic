@@ -26,7 +26,7 @@ public class IPCRepository : IIPCRepository
 
         try
         {
-            var linhasAfetadas = _context.ExecuteNonQuery(sql, parameters);
+            var linhasAfetadas = await _context.ExecuteNonQueryAsync(sql, parameters);
             Console.WriteLine($"✅ IPC Salvo: Data={ipcBaseModel.Data}, Valor={ipcBaseModel.Valor}, Linhas afetadas={linhasAfetadas}");
             await Task.CompletedTask;
         }
@@ -43,9 +43,9 @@ public class IPCRepository : IIPCRepository
         
         var lista = new List<IPCDomain>();
 
-        using (var reader = _context.ExecuteReader(sql))
+        using (var reader = await _context.ExecuteReaderAsync(sql))
         {
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 var data = reader.GetDateTime(0);
                 var valor = reader.GetDecimal(1);

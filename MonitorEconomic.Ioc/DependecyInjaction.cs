@@ -6,25 +6,30 @@ using MonitorEconomic.Infra.Data.Repository;
 using MonitorEconomic.Application.Services;
 using MonitorEconomic.Application.Mediator.IPC.Handler;
 using MonitorEconomic.Application.Mapper;
-using MediatR;
+using MonitorEconomic.Infrastructure.Data.Context;
 
 namespace MonitorEconomic.Infra.Ioc;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddDependencies(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
-    
-        services.AddTransient<IIPCRepository, IPCRepository>();
-
-        services.AddHttpClient<IIPCService, IPCService>();
-
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetIPCHandler).Assembly));
-
         services.AddAutoMapper(typeof(IPCMappingProfile).Assembly);
+        return services;
+    }
 
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped(sp =>
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string is null");
+            return new MonitorEconomicDbContext(connectionString);
+        });
+    
+        services.AddTransient<IIPCRepository, IPCRepository>();   
+        services.AddHttpClient<IIPCService, IPCService>(); 
         return services;
     }
 }

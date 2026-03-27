@@ -8,9 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonitorEconomic.Ioc\MonitorEconomic.Infra.Ioc.csproj" />
-		<ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
 		<ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
-		<ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />
 	</ItemGroup>
 
   <ItemGroup>

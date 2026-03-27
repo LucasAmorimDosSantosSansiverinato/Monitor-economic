@@ -2,10 +2,6 @@ using Npgsql;
 
 namespace MonitorEconomic.Infrastructure.Data.Context;
 
-/// <summary>
-/// Contexto de acesso ao banco de dados PostgreSQL.
-/// Gerencia a conexão com o banco de dados sem usar ORM.
-/// </summary>
 public class MonitorEconomicDbContext : IDisposable
 {
     private readonly string _connectionString;
@@ -15,11 +11,7 @@ public class MonitorEconomicDbContext : IDisposable
     {
         _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
-
-    /// <summary>
-    /// Obtém uma conexão aberta com o banco de dados.
-    /// </summary>
-    public NpgsqlConnection GetConnection()
+    public async Task<NpgsqlConnection> GetConnectionAsync()
     {
         if (_connection == null)
         {
@@ -28,71 +20,51 @@ public class MonitorEconomicDbContext : IDisposable
 
         if (_connection.State == System.Data.ConnectionState.Closed)
         {
-            _connection.Open();
+            await _connection.OpenAsync();
         }
 
         return _connection;
     }
-
-    /// <summary>
-    /// Executa um comando SQL retornando um reader.
-    /// </summary>
-    public NpgsqlDataReader ExecuteReader(string sql, params NpgsqlParameter[] parameters)
+    public async Task<NpgsqlDataReader> ExecuteReaderAsync(string sql, params NpgsqlParameter[] parameters)
     {
-        var command = GetConnection().CreateCommand();
+        var command = (await GetConnectionAsync()).CreateCommand();
         command.CommandText = sql;
-        
+
         if (parameters.Length > 0)
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return command.ExecuteReader();
+        return await command.ExecuteReaderAsync();
     }
-
-    /// <summary>
-    /// Executa um comando SQL retornando um scalar.
-    /// </summary>
-    public object? ExecuteScalar(string sql, params NpgsqlParameter[] parameters)
+    public async Task<object?> ExecuteScalarAsync(string sql, params NpgsqlParameter[] parameters)
     {
-        var command = GetConnection().CreateCommand();
+        var command = (await GetConnectionAsync()).CreateCommand();
         command.CommandText = sql;
-        
+
         if (parameters.Length > 0)
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return command.ExecuteScalar();
+        return await command.ExecuteScalarAsync();
     }
-
-    /// <summary>
-    /// Executa um comando SQL não-query (INSERT, UPDATE, DELETE).
-    /// </summary>
-    public int ExecuteNonQuery(string sql, params NpgsqlParameter[] parameters)
+    public async Task<int> ExecuteNonQueryAsync(string sql, params NpgsqlParameter[] parameters)
     {
-        var command = GetConnection().CreateCommand();
+        var command = (await GetConnectionAsync()).CreateCommand();
         command.CommandText = sql;
-        
+
         if (parameters.Length > 0)
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return command.ExecuteNonQuery();
+        return await command.ExecuteNonQueryAsync();
     }
-
-    /// <summary>
-    /// Inicia uma transação no banco de dados.
-    /// </summary>
-    public NpgsqlTransaction BeginTransaction()
+    public async Task<NpgsqlTransaction> BeginTransactionAsync()
     {
-        return GetConnection().BeginTransaction();
+        return (await GetConnectionAsync()).BeginTransaction();
     }
-
-    /// <summary>
-    /// Testa a conexão com o banco de dados.
-    /// </summary>
     public async Task<bool> TestConnectionAsync()
     {
         try
