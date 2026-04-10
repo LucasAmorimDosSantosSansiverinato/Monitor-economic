@@ -45,7 +45,7 @@ public class IPCRepository : IIPCRepository
 
         using (var reader = await _context.ExecuteReaderAsync(sql))
         {
-            while (await reader.ReadAsync())
+            while (await reader.ReadAsync()) 
             {
                 var data = reader.GetDateTime(0);
                 var valor = reader.GetDecimal(1);

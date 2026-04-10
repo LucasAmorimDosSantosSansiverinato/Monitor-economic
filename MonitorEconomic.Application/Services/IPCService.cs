@@ -31,9 +31,7 @@ namespace MonitorEconomic.Application.Services
 
             try
             {
-                return await _httpClient.GetFromJsonAsync<List<IPCDto>>(url);
-               
-       
+                return await _httpClient.GetFromJsonAsync<List<IPCDto>>(url);                      
             }
             catch (Exception ex)
             {
