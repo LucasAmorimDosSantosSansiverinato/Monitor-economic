@@ -4,29 +4,29 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MonitorEconomic.WebUi.Swagger;
 
-public class IpcDateQueryOperationFilter : IOperationFilter
+public class BacenDateQueryOperationFilter : IOperationFilter
 {
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         var relativePath = context.ApiDescription.RelativePath ?? string.Empty;
         var httpMethod = context.ApiDescription.HttpMethod ?? string.Empty;
 
-        if (httpMethod.Equals("GET", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/ipc", StringComparison.OrdinalIgnoreCase))
+        if (httpMethod.Equals("GET", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/bacen", StringComparison.OrdinalIgnoreCase))
         {
-            operation.Summary = "Consulta IPC na API externa";
-            operation.Description = "Consulta o IPC em um intervalo de datas na API externa do Banco Central.";
+            operation.Summary = "Consulta dados do Bacen na API externa";
+            operation.Description = "Consulta dados do Bacen em um intervalo de datas na API externa do Banco Central.";
         }
 
-        if (httpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/ipc/store", StringComparison.OrdinalIgnoreCase))
+        if (httpMethod.Equals("POST", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/bacen/store", StringComparison.OrdinalIgnoreCase))
         {
-            operation.Summary = "Consulta e persiste IPC";
-            operation.Description = "Busca o IPC na API externa e persiste os registros retornados no banco de dados.";
+            operation.Summary = "Consulta e persiste dados do Bacen";
+            operation.Description = "Busca dados do Bacen na API externa e persiste os registros retornados no banco de dados.";
         }
 
-        if (httpMethod.Equals("GET", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/ipc/db", StringComparison.OrdinalIgnoreCase))
+        if (httpMethod.Equals("GET", StringComparison.OrdinalIgnoreCase) && relativePath.Equals("api/bacen/db", StringComparison.OrdinalIgnoreCase))
         {
-            operation.Summary = "Lista IPCs persistidos";
-            operation.Description = "Lista todos os registros de IPC já armazenados no banco de dados.";
+            operation.Summary = "Lista registros do Bacen persistidos";
+            operation.Description = "Lista todos os registros do Bacen já armazenados no banco de dados.";
         }
 
         foreach (var parameter in operation.Parameters)
@@ -41,6 +41,13 @@ public class IpcDateQueryOperationFilter : IOperationFilter
             {
                 parameter.Description = "Informe a data final no formato dd/MM/yyyy. Exemplo: 31/01/2024";
                 parameter.Example = new OpenApiString("31/01/2024");
+            }
+
+            if (parameter.Name.Equals("serie", StringComparison.OrdinalIgnoreCase))
+            {
+                parameter.Required = true;
+                parameter.Description = "Serie do Bacen a ser consultada. Exemplo atual: Ipc";
+                parameter.Example = new OpenApiString("Ipc");
             }
         }
 

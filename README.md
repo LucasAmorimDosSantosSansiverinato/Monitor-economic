@@ -9,14 +9,14 @@ Arquitetura de soluções:
 
 MonitorEconomic
 
-API para consultar e armazenar IPC (Índice de Preços ao Consumidor) usando .NET 8, PostgreSQL e Docker.
+API para consultar e armazenar dados do Bacen usando .NET 8, PostgreSQL e Docker.
 
 ## 🏗️ Arquitetura
 
 - **Clean Architecture** com separação clara de responsabilidades
 - **CQRS** com MediatR para commands e queries
 - **Repository Pattern** para acesso a dados
-- **AutoMapper** para mapeamento DTO ↔ Domain
+- **AutoMapper** para mapeamento Domain → DTO
 - **PostgreSQL** como banco de dados
 - **Docker** para containerização
 
@@ -31,7 +31,7 @@ API para consultar e armazenar IPC (Índice de Preços ao Consumidor) usando .NE
 
 ```bash
 git clone <repository-url>
-cd Monitor-economic
+cd .NET
 ```
 
 ### 2. Arquivo de ambiente
@@ -57,23 +57,24 @@ A API estará acessível em: **http://localhost:8080**
 
 O PostgreSQL estará rodando na porta **5432**.
 
-> 💡 **Nota**: A API aplica as migrations automaticamente ao iniciar.
+> 💡 **Nota**: este projeto usa acesso direto com Npgsql. A estrutura da tabela `ipc` deve existir no banco conforme a seção de banco de dados abaixo.
 
 ## 📡 API Endpoints
 
 ### 🔍 Buscar dados da API externa
 
-**GET** `/api/ipc`
+**GET** `/api/bacen`
 
-Busca dados de IPC da API externa do IBGE para um período específico.
+Busca dados do Bacen para um período específico.
 
 **Parâmetros de Query:**
-- `dataInicial` (string): Data inicial no formato YYYY-MM-DD
-- `dataFinal` (string): Data final no formato YYYY-MM-DD
+- `serie` (enum, obrigatório): Série do Bacen a ser consultada. Exemplo atual: `Ipc`
+- `dataInicial` (string): Data inicial no formato `dd/MM/yyyy`
+- `dataFinal` (string): Data final no formato `dd/MM/yyyy`
 
 **Exemplo:**
 ```bash
-curl "http://localhost:8080/api/ipc?dataInicial=2024-01-01&dataFinal=2024-03-31"
+curl "http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/03/2024"
 ```
 
 **Resposta de sucesso (200):**
@@ -81,35 +82,39 @@ curl "http://localhost:8080/api/ipc?dataInicial=2024-01-01&dataFinal=2024-03-31"
 [
   {
     "data": "2024-01-01",
-    "valor": 0.65
+    "valor": "0.65"
   },
   {
     "data": "2024-02-01",
-    "valor": 0.72
+    "valor": "0.72"
   }
 ]
 ```
 
 ### 💾 Salvar dados no banco
 
-**POST** `/api/ipc/store`
+**POST** `/api/bacen/store`
 
 Busca dados da API externa e salva no banco de dados PostgreSQL.
 
+Retorna os registros persistidos como entidades de domínio, incluindo o `id` gerado para cada item salvo.
+
 **Parâmetros de Query:**
-- `dataInicial` (string): Data inicial no formato YYYY-MM-DD
-- `dataFinal` (string): Data final no formato YYYY-MM-DD
+- `serie` (enum, obrigatório): Série do Bacen a ser consultada. Exemplo atual: `Ipc`
+- `dataInicial` (string): Data inicial no formato `dd/MM/yyyy`
+- `dataFinal` (string): Data final no formato `dd/MM/yyyy`
 
 **Exemplo:**
 ```bash
-curl -X POST "http://localhost:8080/api/ipc/store?dataInicial=2024-01-01&dataFinal=2024-03-31"
+curl -X POST "http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/03/2024"
 ```
 
 **Resposta de sucesso (200):**
 ```json
 [
   {
-    "data": "2024-01-01",
+    "id": "2f55b7ce-8e13-4eb7-9f0c-7a8fbfc8a8e1",
+    "data": "2024-01-01T00:00:00",
     "valor": 0.65
   }
 ]
@@ -117,32 +122,32 @@ curl -X POST "http://localhost:8080/api/ipc/store?dataInicial=2024-01-01&dataFin
 
 ### 📊 Consultar dados salvos no banco
 
-**GET** `/api/ipc/db`
+**GET** `/api/bacen/db`
 
-Retorna todos os registros de IPC salvos no banco de dados.
+Retorna todos os registros do Bacen salvos no banco de dados.
 
 **Exemplo:**
 ```bash
-curl "http://localhost:8080/api/ipc/db"
+curl "http://localhost:8080/api/bacen/db"
 ```
 
 **Resposta de sucesso (200):**
 ```json
 [
   {
-    "data": "2024-01-01T00:00:00",
-    "valor": 0.65
+    "data": "2024-01-01",
+    "valor": "0.65"
   },
   {
-    "data": "2024-02-01T00:00:00",
-    "valor": 0.72
+    "data": "2024-02-01",
+    "valor": "0.72"
   }
 ]
 ```
 
 **Resposta quando não há dados (404):**
 ```json
-"Nenhum registro de IPC encontrado no banco."
+"Nenhum registro do Bacen encontrado no banco."
 ```
 
 ## 🗄️ Banco de Dados
@@ -160,7 +165,7 @@ docker exec -it monitor_economic_db psql -U postgres -d monitor_economic
 \d ipc
 
 # Consultar todos os registros
-SELECT * FROM ipc ORDER BY data DESC;
+SELECT * FROM ipc ORDER BY "Data" DESC;
 
 # Sair do PostgreSQL
 \q
@@ -170,8 +175,9 @@ SELECT * FROM ipc ORDER BY data DESC;
 
 ```sql
 CREATE TABLE ipc (
-    data DATE PRIMARY KEY,
-    valor DECIMAL(10,4) NOT NULL
+    "Id" UUID PRIMARY KEY,
+    "Data" DATE NOT NULL,
+    "Valor" DECIMAL(10,4) NOT NULL
 );
 ```
 
@@ -181,29 +187,29 @@ CREATE TABLE ipc (
 
 ```bash
 # 1. Buscar dados da API externa
-curl "http://localhost:8080/api/ipc?dataInicial=2024-01-01&dataFinal=2024-01-31"
+curl "http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024"
 
 # 2. Salvar dados no banco
-curl -X POST "http://localhost:8080/api/ipc/store?dataInicial=2024-01-01&dataFinal=2024-01-31"
+curl -X POST "http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024"
 
 # 3. Consultar dados salvos
-curl "http://localhost:8080/api/ipc/db"
+curl "http://localhost:8080/api/bacen/db"
 ```
 
 ### Usando Postman/Insomnia
 
-1. **GET** `http://localhost:8080/api/ipc?dataInicial=2024-01-01&dataFinal=2024-01-31`
-2. **POST** `http://localhost:8080/api/ipc/store?dataInicial=2024-01-01&dataFinal=2024-01-31`
-3. **GET** `http://localhost:8080/api/ipc/db`
+1. **GET** `http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024`
+2. **POST** `http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024`
+3. **GET** `http://localhost:8080/api/bacen/db`
 
 ## 🏛️ Estrutura do Projeto
 
 ```
 MonitorEconomic/
-├── MonitorEconomic.WebUi/          # Camada de Apresentação (ASP.NET Core MVC)
+├── MonitorEconomic.WebUi/          # Camada de Apresentação (ASP.NET Core Web API)
 ├── MonitorEconomic.Application/    # Camada de Aplicação (CQRS, MediatR)
-├── MonitorEconomic.Domain/         # Camada de Domínio (Entities, Interfaces)
-├── MonitorEconomic.Infra.Data/     # Camada de Infraestrutura (Repository, Context)
+├── MonitorEconomic.Domain/         # Camada de Domínio (Entities, contratos, exceções)
+├── MonitorEconomic.Infra.Data/     # Camada de Infraestrutura (Repository, Context, integração Bacen)
 ├── MonitorEconomic.Ioc/           # Injeção de Dependência
 └── docker-compose.yml             # Configuração Docker
 ```
@@ -250,43 +256,8 @@ docker compose down --volumes --remove-orphans
 
 Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-4.4 Sair do psql
+## 🔎 Swagger
 
-\q
+O Swagger UI fica disponível na raiz da aplicação em ambiente de desenvolvimento:
 
-5️⃣ Usar a API
-
-A API possui endpoints para consultar e armazenar IPC.
-Swagger estará disponível em:
-
-http://localhost:8080/swagger
-
-Permite testar os endpoints diretamente do navegador.
-
-6️⃣ Comandos úteis
-
-Ver containers ativos:
-
-docker ps
-
-Parar containers:
-
-docker compose down
-
-Listar tabelas e registros direto (sem entrar no psql):
-
-docker exec -it monitor_economic_db psql -U postgres -d monitor_economic -c "\dt"
-
-docker exec -it monitor_economic_db psql -U postgres -d monitor_economic -c "SELECT * FROM ipc;"
-
-7️⃣ Estrutura do projeto
-
-MonitorEconomic.WebUi → Projeto ASP.NET API
-
-MonitorEconomic.Infra.Data → DbContext e Migrations
-
-MonitorEconomic.Application → Casos de uso (UseCases)
-
-MonitorEconomic.Domain → Entidades e regras de negócio
-
-MonitorEconomic.Ioc → Injeção de dependência
+`http://localhost:8080/`

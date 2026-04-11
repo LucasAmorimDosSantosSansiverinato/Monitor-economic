@@ -5,3 +5,6 @@ obj/
 *.suo
 appsettings.Local.json
 .env
+architecture-review-notes.local.txt
+PROJECT_FLOW.md
+code-defects-review.local.txt

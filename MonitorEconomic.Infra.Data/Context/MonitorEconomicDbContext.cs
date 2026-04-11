@@ -11,7 +11,7 @@ public class MonitorEconomicDbContext : IDisposable
     {
         _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
     }
-    public async Task<NpgsqlConnection> GetConnectionAsync()
+    public async Task<NpgsqlConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
     {
         if (_connection == null)
         {
@@ -20,50 +20,50 @@ public class MonitorEconomicDbContext : IDisposable
 
         if (_connection.State == System.Data.ConnectionState.Closed)
         {
-            await _connection.OpenAsync();
+            await _connection.OpenAsync(cancellationToken);
         }
 
         return _connection;
     }
-    public async Task<NpgsqlDataReader> ExecuteReaderAsync(string sql, params NpgsqlParameter[] parameters)
+    public async Task<NpgsqlDataReader> ExecuteReaderAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync()).CreateCommand();
+        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
         command.CommandText = sql;
 
-        if (parameters.Length > 0)
+        if (parameters is { Length: > 0 })
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return await command.ExecuteReaderAsync();
+        return await command.ExecuteReaderAsync(cancellationToken);
     }
-    public async Task<object?> ExecuteScalarAsync(string sql, params NpgsqlParameter[] parameters)
+    public async Task<object?> ExecuteScalarAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync()).CreateCommand();
+        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
         command.CommandText = sql;
 
-        if (parameters.Length > 0)
+        if (parameters is { Length: > 0 })
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return await command.ExecuteScalarAsync();
+        return await command.ExecuteScalarAsync(cancellationToken);
     }
-    public async Task<int> ExecuteNonQueryAsync(string sql, params NpgsqlParameter[] parameters)
+    public async Task<int> ExecuteNonQueryAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync()).CreateCommand();
+        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
         command.CommandText = sql;
 
-        if (parameters.Length > 0)
+        if (parameters is { Length: > 0 })
         {
             command.Parameters.AddRange(parameters);
         }
 
-        return await command.ExecuteNonQueryAsync();
+        return await command.ExecuteNonQueryAsync(cancellationToken);
     }
-    public async Task<NpgsqlTransaction> BeginTransactionAsync()
+    public async Task<NpgsqlTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        return (await GetConnectionAsync()).BeginTransaction();
+        return (await GetConnectionAsync(cancellationToken)).BeginTransaction();
     }
     public async Task<bool> TestConnectionAsync()
     {
