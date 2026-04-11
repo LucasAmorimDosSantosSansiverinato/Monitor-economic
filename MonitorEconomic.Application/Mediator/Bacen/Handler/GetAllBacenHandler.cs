@@ -3,7 +3,7 @@ using MediatR;
 using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
 using MonitorEconomic.Domain.Interfaces.IRepository;
-
+using MonitorEconomic.Domain.Entities;
 namespace MonitorEconomic.Application.Mediator.Bacen.Handler;
 
 public class GetAllBacenHandler : IRequestHandler<GetAllBacenQuery, List<BacenDto>>
@@ -18,7 +18,7 @@ public class GetAllBacenHandler : IRequestHandler<GetAllBacenQuery, List<BacenDt
 
     public async Task<List<BacenDto>> Handle(GetAllBacenQuery request, CancellationToken cancellationToken)
     {
-        var registros = await _bacenRepository.obterTodosAsync(cancellationToken);
+        List<BacenDomain> registros = await _bacenRepository.obterTodosAsync(cancellationToken);
         return _mapper.Map<List<BacenDto>>(registros);
     }
 }

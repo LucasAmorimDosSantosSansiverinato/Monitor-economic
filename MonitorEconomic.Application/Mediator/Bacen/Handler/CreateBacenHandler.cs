@@ -4,6 +4,7 @@ using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Mediator.Bacen.Commands;
 using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Domain.Interfaces.Service;
+using MonitorEconomic.Domain.Entities;
 
 namespace MonitorEconomic.Application.Mediator.Bacen.Handler;
 
@@ -22,7 +23,7 @@ public class CreateBacenHandler : IRequestHandler<CreateBacenCommand, List<Bacen
 
     public async Task<List<BacenDto>> Handle(CreateBacenCommand request, CancellationToken cancellationToken)
     {
-        var listaModels = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
+        List<BacenDomain> listaModels = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
 
         foreach (var model in listaModels)
         {
