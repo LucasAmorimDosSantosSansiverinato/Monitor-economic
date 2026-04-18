@@ -4,7 +4,8 @@ Diagrama de blocos:
 
 Arquitetura de soluções:
 
-<img width="1046" height="510" alt="image" src="https://github.com/user-attachments/assets/bb7ff5f6-7eb2-44af-a000-c40d1aa0248d" />
+<img width="1419" height="714" alt="image" src="https://github.com/user-attachments/assets/db391ac8-ccd8-4f3f-881e-08110df784f5" />
+
 
 
 MonitorEconomic
