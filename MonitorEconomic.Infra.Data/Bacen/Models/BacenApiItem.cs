@@ -1,4 +1,4 @@
-namespace MonitorEconomic.Infra.Data.Services;
+namespace MonitorEconomic.Infra.Data.Bacen.Models;
 
 internal class BacenApiItem
 {

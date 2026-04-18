@@ -3,10 +3,13 @@ using MonitorEconomic.Domain.Enums;
 using MonitorEconomic.Domain.Exceptions;
 using MonitorEconomic.Domain.Interfaces.Service;
 using Microsoft.Extensions.Options;
-using System.Net.Http.Json;
+using MonitorEconomic.Infra.Data.Bacen.Abstractions;
+using MonitorEconomic.Infra.Data.Bacen.Configuration;
+using MonitorEconomic.Infra.Data.Bacen.Models;
 using System.Globalization;
+using System.Net.Http.Json;
 
-namespace MonitorEconomic.Infra.Data.Services;
+namespace MonitorEconomic.Infra.Data.Bacen.Services;
 
 public class BacenHttpService : IBacenService
 {
@@ -23,10 +26,10 @@ public class BacenHttpService : IBacenService
 
     public async Task<List<BacenDomain>> obterBacenAsync(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken = default)
     {
-        if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var dataInicialParsed))
+        if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataInicialParsed))
             throw new ArgumentException("data Inicial deve estar com formato em dd/MM/yyyy", nameof(dataInicial));
 
-        if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var dataFinalParsed))
+        if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataFinalParsed))
             throw new ArgumentException("data Final deve estar com formato em dd/MM/yyyy", nameof(dataFinal));
 
         if (string.IsNullOrWhiteSpace(_bacenApiOptions.SeriesUrlTemplate))
@@ -37,7 +40,7 @@ public class BacenHttpService : IBacenService
         var codigoSerie = ObterCodigoSerie(serie);
 
         var url = _bacenApiOptions.SeriesUrlTemplate
-            .Replace("{codigo}", codigoSerie.ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            .Replace("{codigo}", codigoSerie.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{dataInicial}", dataInicialFormatada, StringComparison.Ordinal)
             .Replace("{dataFinal}", dataFinalFormatada, StringComparison.Ordinal);
 

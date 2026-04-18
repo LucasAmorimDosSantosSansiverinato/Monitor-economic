@@ -14,7 +14,7 @@ public static class WebServiceCollectionExtensions
             {
                 Title = "MonitorEconomic API",
                 Version = "v1",
-                Description = "API para consultar dados do Bacen na fonte externa, persistir registros localmente e consultar o historico salvo no banco.",
+                Description = "API para consultar dados do Bacen com fluxo cache, banco e fonte externa, persistindo os resultados localmente quando necessario.",
                 Contact = new OpenApiContact
                 {
                     Name = "MonitorEconomic"

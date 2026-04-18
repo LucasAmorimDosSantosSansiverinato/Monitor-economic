@@ -1,7 +1,3 @@
-Diagrama de blocos:
-
-<img width="1575" height="1198" alt="image" src="https://github.com/user-attachments/assets/4df30b69-f7be-4385-9a54-5fada629e1fe" />
-
 Arquitetura de soluções:
 
 <img width="1046" height="510" alt="image" src="https://github.com/user-attachments/assets/bb7ff5f6-7eb2-44af-a000-c40d1aa0248d" />
@@ -9,7 +5,7 @@ Arquitetura de soluções:
 
 MonitorEconomic
 
-API para consultar e armazenar dados do Bacen usando .NET 8, PostgreSQL e Docker.
+API para consultar dados do Bacen usando .NET 8, PostgreSQL e Docker, com fallback entre cache, banco e fonte externa.
 
 ## 🏗️ Arquitetura
 
@@ -57,18 +53,28 @@ A API estará acessível em: **http://localhost:8080**
 
 O PostgreSQL estará rodando na porta **5432**.
 
-> 💡 **Nota**: este projeto usa acesso direto com Npgsql. A estrutura da tabela `ipc` deve existir no banco conforme a seção de banco de dados abaixo.
+> 💡 **Nota**: este projeto usa acesso direto com Npgsql e cria as tabelas por série sob demanda.
 
 ## 📡 API Endpoints
 
-### 🔍 Buscar dados da API externa
+### 🔍 Consultar dados do Bacen
 
 **GET** `/api/bacen`
 
-Busca dados do Bacen para um período específico.
+Fluxo da consulta:
+
+1. Busca primeiro no cache do servidor.
+2. Se não encontrar, busca no banco PostgreSQL.
+3. Se ainda não encontrar, consulta a API do Bacen.
+4. Quando consulta externamente, grava o resultado no banco e atualiza o cache.
 
 **Parâmetros de Query:**
-- `serie` (enum, obrigatório): Série do Bacen a ser consultada. Exemplo atual: `Ipc`
+- `serie` (enum, obrigatório): Série do Bacen a ser consultada.
+- Mapeamento atual do enum `BacenSerie`:
+  - `1 = Ipc`
+  - `2 = Dolar`
+  - `3 = Euro`
+  - `4 = Selic`
 - `dataInicial` (string): Data inicial no formato `dd/MM/yyyy`
 - `dataFinal` (string): Data final no formato `dd/MM/yyyy`
 
@@ -91,64 +97,13 @@ curl "http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal
 ]
 ```
 
-### 💾 Salvar dados no banco
+### 🧠 Regras de cache
 
-**POST** `/api/bacen/store`
-
-Busca dados da API externa e salva no banco de dados PostgreSQL.
-
-Retorna os registros persistidos como entidades de domínio, incluindo o `id` gerado para cada item salvo.
-
-**Parâmetros de Query:**
-- `serie` (enum, obrigatório): Série do Bacen a ser consultada. Exemplo atual: `Ipc`
-- `dataInicial` (string): Data inicial no formato `dd/MM/yyyy`
-- `dataFinal` (string): Data final no formato `dd/MM/yyyy`
-
-**Exemplo:**
-```bash
-curl -X POST "http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/03/2024"
-```
-
-**Resposta de sucesso (200):**
-```json
-[
-  {
-    "id": "2f55b7ce-8e13-4eb7-9f0c-7a8fbfc8a8e1",
-    "data": "2024-01-01T00:00:00",
-    "valor": 0.65
-  }
-]
-```
-
-### 📊 Consultar dados salvos no banco
-
-**GET** `/api/bacen/db`
-
-Retorna todos os registros do Bacen salvos no banco de dados.
-
-**Exemplo:**
-```bash
-curl "http://localhost:8080/api/bacen/db"
-```
-
-**Resposta de sucesso (200):**
-```json
-[
-  {
-    "data": "2024-01-01",
-    "valor": "0.65"
-  },
-  {
-    "data": "2024-02-01",
-    "valor": "0.72"
-  }
-]
-```
-
-**Resposta quando não há dados (404):**
-```json
-"Nenhum registro do Bacen encontrado no banco."
-```
+- O cache fica no servidor da API em execução no Docker.
+- Cada entrada pode permanecer por até 15 dias.
+- Para séries de moedas atualizadas diariamente, como `Dolar` e `Euro`, o cache expira no fim do dia e só volta a ser preenchido na primeira consulta seguinte.
+- Toda virada para o dia 1 de um novo mês limpa o cache anterior.
+- Quando o banco é atualizado por uma consulta externa, o cache da mesma consulta também é atualizado.
 
 ## 🗄️ Banco de Dados
 
@@ -161,17 +116,17 @@ docker exec -it monitor_economic_db psql -U postgres -d monitor_economic
 # Listar todas as tabelas
 \dt
 
-# Ver estrutura da tabela ipc
+# Ver estrutura de uma tabela de serie
 \d ipc
 
-# Consultar todos os registros
+# Consultar os registros de uma serie
 SELECT * FROM ipc ORDER BY "Data" DESC;
 
 # Sair do PostgreSQL
 \q
 ```
 
-### Estrutura da tabela `ipc`
+### Estrutura das tabelas por serie
 
 ```sql
 CREATE TABLE ipc (
@@ -181,26 +136,28 @@ CREATE TABLE ipc (
 );
 ```
 
+Cada serie utiliza sua propria tabela, usando o nome do enum em minusculas.
+
+Exemplos de mapeamento atual:
+
+- `Ipc` -> tabela `ipc`
+- `Dolar` -> tabela `dolar`
+- `Euro` -> tabela `euro`
+- `Selic` -> tabela `selic`
+
 ## 🧪 Testando a API
 
 ### Usando cURL
 
 ```bash
-# 1. Buscar dados da API externa
+# 1. Consultar dados
 curl "http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024"
 
-# 2. Salvar dados no banco
-curl -X POST "http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024"
-
-# 3. Consultar dados salvos
-curl "http://localhost:8080/api/bacen/db"
 ```
 
 ### Usando Postman/Insomnia
 
 1. **GET** `http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024`
-2. **POST** `http://localhost:8080/api/bacen/store?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024`
-3. **GET** `http://localhost:8080/api/bacen/db`
 
 ## 🏛️ Estrutura do Projeto
 

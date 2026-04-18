@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using MonitorEconomic.Domain.Enums;
-using MonitorEconomic.Infra.Data.Services;
+using MonitorEconomic.Infra.Data.Bacen.Configuration;
+using MonitorEconomic.Infra.Data.Bacen.Services;
+using MonitorEconomic.Infra.Data.Bacen.Strategies;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;

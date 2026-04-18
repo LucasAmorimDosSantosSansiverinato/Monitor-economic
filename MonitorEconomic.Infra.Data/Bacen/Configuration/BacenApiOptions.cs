@@ -1,4 +1,4 @@
-namespace MonitorEconomic.Infra.Data.Services;
+namespace MonitorEconomic.Infra.Data.Bacen.Configuration;
 
 public class BacenApiOptions
 {

@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MonitorEconomic.Application.Bacen.Parsing;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
-using MonitorEconomic.Application.Mediator.Bacen.Commands;
-using MonitorEconomic.Domain.Enums;
 
 [ApiExplorerSettings(GroupName = "v1")]
 [ApiController]
@@ -19,62 +18,31 @@ public class BacenController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetBacen([FromQuery] BacenSerie? serie, [FromQuery] string dataInicial, [FromQuery] string dataFinal, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBacen([FromQuery] string? serie, [FromQuery] string dataInicial, [FromQuery] string dataFinal, CancellationToken cancellationToken)
     {
-        if (!TryValidarSerie(serie, out var serieSelecionada))
+        if (!TryValidarSerie(serie))
             return ValidationProblem(ModelState);
 
-        var query = new GetBacenQuery(serieSelecionada, dataInicial, dataFinal);
+        var query = new GetBacenQuery(serie!, dataInicial, dataFinal);
         var resultado = await _mediator.Send(query, cancellationToken);
 
         return Ok(resultado);
     }
 
-    [HttpPost("store")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> StoreBacen([FromQuery] BacenSerie? serie, [FromQuery] string dataInicial, [FromQuery] string dataFinal, CancellationToken cancellationToken)
+    private bool TryValidarSerie(string? serie)
     {
-        if (!TryValidarSerie(serie, out var serieSelecionada))
-            return ValidationProblem(ModelState);
-
-        var command = new CreateBacenCommand(serieSelecionada, dataInicial, dataFinal);
-        var resultado = await _mediator.Send(command, cancellationToken);
-
-        return Ok(resultado);
-    }
-
-    [HttpGet("db")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetBacenFromDatabase(CancellationToken cancellationToken)
-    {
-        var query = new GetAllBacenQuery();
-        var registros = await _mediator.Send(query, cancellationToken);
-
-        if (registros == null || registros.Count == 0)
-            return NotFound("Nenhum registro do Bacen encontrado no banco.");
-
-        return Ok(registros);
-    }
-
-    private bool TryValidarSerie(BacenSerie? serie, out BacenSerie serieSelecionada)
-    {
-        if (!serie.HasValue)
+        if (string.IsNullOrWhiteSpace(serie))
         {
             ModelState.AddModelError(nameof(serie), "O parâmetro serie é obrigatório.");
-            serieSelecionada = default;
             return false;
         }
 
-        if (!Enum.IsDefined(serie.Value))
+        if (!BacenSerieParser.IsValid(serie))
         {
             ModelState.AddModelError(nameof(serie), "O parâmetro serie é inválido.");
-            serieSelecionada = default;
             return false;
         }
 
-        serieSelecionada = serie.Value;
         return true;
     }
 }

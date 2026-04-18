@@ -9,6 +9,7 @@ COPY MonitorEconomic.Application/MonitorEconomic.Application.csproj MonitorEcono
 COPY MonitorEconomic.Domain/MonitorEconomic.Domain.csproj MonitorEconomic.Domain/
 COPY MonitorEconomic.Infra.Data/MonitorEconomic.Infra.Data.csproj MonitorEconomic.Infra.Data/
 COPY MonitorEconomic.Ioc/MonitorEconomic.Infra.Ioc.csproj MonitorEconomic.Ioc/
+COPY MonitorEconomic.Tests/MonitorEconomic.Tests.csproj MonitorEconomic.Tests/
  
 
 # Restaurar dependências

@@ -1,6 +1,5 @@
 ﻿using MonitorEconomic.Domain.Exceptions;
 using MonitorEconomic.Domain.Enums;
-using System.Data;
 
 namespace MonitorEconomic.Domain.Entities;
 
