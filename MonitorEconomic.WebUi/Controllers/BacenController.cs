@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MonitorEconomic.Application.Bacen.Parsing;
+using MonitorEconomic.Application.Mediator.Bacen.Commands;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
 
 [ApiExplorerSettings(GroupName = "v1")]
@@ -20,13 +21,25 @@ public class BacenController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBacen([FromQuery] string? serie, [FromQuery] string dataInicial, [FromQuery] string dataFinal, CancellationToken cancellationToken)
     {
-        if (!TryValidarSerie(serie))
-            return ValidationProblem(ModelState);
+        TryValidarSerie(serie);
 
         var query = new GetBacenQuery(serie!, dataInicial, dataFinal);
         var resultado = await _mediator.Send(query, cancellationToken);
 
-        return Ok(resultado);
+        if (resultado.Count > 0)
+        {
+            return Ok(resultado);
+        }
+
+        var command = new RefreshBacenCommand(serie!, dataInicial, dataFinal);
+        var atualizado = await _mediator.Send(command, cancellationToken);
+       
+       if (atualizado.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(atualizado);
     }
 
     private bool TryValidarSerie(string? serie)

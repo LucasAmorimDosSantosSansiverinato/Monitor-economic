@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
-using MonitorEconomic.Domain.Interfaces.Service;
+using MonitorEconomic.Abstractions.Cache;
 
 namespace MonitorEconomic.Infra.Data.Cache;
 

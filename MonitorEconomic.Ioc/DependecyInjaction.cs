@@ -11,6 +11,7 @@ using MonitorEconomic.Infra.Data.Bacen.Configuration;
 using MonitorEconomic.Infra.Data.Bacen.Services;
 using MonitorEconomic.Infra.Data.Bacen.Strategies;
 using MonitorEconomic.Infra.Data.Cache;
+using MonitorEconomic.Abstractions.Cache;
 
 namespace MonitorEconomic.Infra.Ioc;
 

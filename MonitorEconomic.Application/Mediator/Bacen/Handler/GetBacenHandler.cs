@@ -3,23 +3,21 @@ using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Bacen.Parsing;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
 using MonitorEconomic.Domain.Interfaces.IRepository;
-using MonitorEconomic.Domain.Interfaces.Service;
+using MonitorEconomic.Abstractions.Cache;
 using AutoMapper;
-using MonitorEconomic.Domain.Entities;
+
 namespace MonitorEconomic.Application.Mediator.Bacen.Handler;
 
 public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
 {
     private readonly IBacenRepository _bacenRepository;
     private readonly IBacenCache _bacenCache;
-    private readonly IBacenService _bacenService;
     private readonly IMapper _mapper;
 
-    public GetBacenHandler(IBacenRepository bacenRepository, IBacenCache bacenCache, IBacenService bacenService, IMapper mapper)
+    public GetBacenHandler(IBacenRepository bacenRepository, IBacenCache bacenCache, IMapper mapper)
     {
         _bacenRepository = bacenRepository;
         _bacenCache = bacenCache;
-        _bacenService = bacenService;
         _mapper = mapper;
     }
 
@@ -39,15 +37,7 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
             await _bacenCache.salvarAsync(request.Serie, dataInicial, dataFinal, registrosNoBanco, cancellationToken);
             return _mapper.Map<List<BacenDto>>(registrosNoBanco);
         }
-
-        List<BacenDomain> registros = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
-
-        foreach (var registro in registros)
-        {
-            await _bacenRepository.salvarAsync(registro, cancellationToken);
-        }
-
-        await _bacenCache.salvarAsync(request.Serie, dataInicial, dataFinal, registros, cancellationToken);
-        return _mapper.Map<List<BacenDto>>(registros);
+ 
+        return new List<BacenDto>();
     }
 }

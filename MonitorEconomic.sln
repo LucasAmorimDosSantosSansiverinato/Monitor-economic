@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.WebUi", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Tests", "MonitorEconomic.Tests\MonitorEconomic.Tests.csproj", "{678F43DB-6F97-43CB-A213-5F090FDA36DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Abstractions", "MonitorEconomic.Abstractions\MonitorEconomic.Abstractions.csproj", "{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x64.Build.0 = Release|Any CPU
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x86.Build.0 = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|x64.Build.0 = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Debug|x86.Build.0 = Debug|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|x64.ActiveCfg = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|x64.Build.0 = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|x86.ActiveCfg = Release|Any CPU
+		{8CDB20D9-A2DD-4F8B-A8B2-7AA6B929C61E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
