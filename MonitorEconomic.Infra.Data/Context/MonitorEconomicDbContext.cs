@@ -25,51 +25,35 @@ public class MonitorEconomicDbContext : IDisposable
 
         return _connection;
     }
+
     public async Task<NpgsqlDataReader> ExecuteReaderAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
-        command.CommandText = sql;
-
-        if (parameters is { Length: > 0 })
-        {
-            command.Parameters.AddRange(parameters);
-        }
-
+        var command = await CreateCommandAsync(sql, parameters, cancellationToken);
         return await command.ExecuteReaderAsync(cancellationToken);
     }
+
     public async Task<object?> ExecuteScalarAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
-        command.CommandText = sql;
-
-        if (parameters is { Length: > 0 })
-        {
-            command.Parameters.AddRange(parameters);
-        }
-
+        var command = await CreateCommandAsync(sql, parameters, cancellationToken);
         return await command.ExecuteScalarAsync(cancellationToken);
     }
+
     public async Task<int> ExecuteNonQueryAsync(string sql, NpgsqlParameter[]? parameters = null, CancellationToken cancellationToken = default)
     {
-        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
-        command.CommandText = sql;
-
-        if (parameters is { Length: > 0 })
-        {
-            command.Parameters.AddRange(parameters);
-        }
-
+        var command = await CreateCommandAsync(sql, parameters, cancellationToken);
         return await command.ExecuteNonQueryAsync(cancellationToken);
     }
+
     public async Task<NpgsqlTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
         return (await GetConnectionAsync(cancellationToken)).BeginTransaction();
     }
+
     public async Task<bool> TestConnectionAsync()
     {
         try
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using var connection = new NpgsqlConnection(_connectionString);
             {
                 await connection.OpenAsync();
                 return true;
@@ -79,6 +63,19 @@ public class MonitorEconomicDbContext : IDisposable
         {
             return false;
         }
+    }
+
+    private async Task<NpgsqlCommand> CreateCommandAsync(string sql, NpgsqlParameter[]? parameters, CancellationToken cancellationToken)
+    {
+        var command = (await GetConnectionAsync(cancellationToken)).CreateCommand();
+        command.CommandText = sql;
+
+        if (parameters is { Length: > 0 })
+        {
+            command.Parameters.AddRange(parameters);
+        }
+
+        return command;
     }
 
     public void Dispose()

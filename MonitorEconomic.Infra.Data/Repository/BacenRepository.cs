@@ -1,6 +1,6 @@
-﻿using MonitorEconomic.Domain.Interfaces.IRepository;
-using MonitorEconomic.Domain.Entities;
+﻿using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
+using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Infrastructure.Data.Context;
 using Npgsql;
 
@@ -21,7 +21,7 @@ public class BacenRepository : IBacenRepository
     public async Task salvarAsync(BacenDomain bacen, CancellationToken cancellationToken = default)
     {
         var tableName = ObterNomeTabela(bacen.Serie);
-        await EnsureSchemaAsync(tableName, cancellationToken);
+        await EnsureTableAsync(tableName, cancellationToken);
 
         var sql = $"""
             INSERT INTO {tableName} ("Id", "Data", "Valor")
@@ -29,7 +29,7 @@ public class BacenRepository : IBacenRepository
             ON CONFLICT ("Data")
             DO UPDATE SET "Valor" = EXCLUDED."Valor";
             """;
-        
+
         var parameters = new[]
         {
             new NpgsqlParameter("@id", bacen.Id),
@@ -37,26 +37,13 @@ public class BacenRepository : IBacenRepository
             new NpgsqlParameter("@valor", bacen.Valor)
         };
 
-        try
-        {
-            var linhasAfetadas = await _context.ExecuteNonQueryAsync(sql, parameters, cancellationToken);
-
-            if (linhasAfetadas > 0)
-                Console.WriteLine($"✅ Bacen salvo: Tabela={tableName}, Id={bacen.Id}, Serie={bacen.Serie}, Data={bacen.Data}, Valor={bacen.Valor}, Linhas afetadas={linhasAfetadas}");
-            else
-                Console.WriteLine("⚠ Nenhuma linha inserida para Bacen.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Erro ao salvar dados do Bacen: {ex.Message}");
-            throw;
-        }
+        await _context.ExecuteNonQueryAsync(sql, parameters, cancellationToken);
     }
 
     public async Task<List<BacenDomain>> obterPorPeriodoAsync(BacenSerie serie, DateTime dataInicial, DateTime dataFinal, CancellationToken cancellationToken = default)
     {
         var tableName = ObterNomeTabela(serie);
-        await EnsureSchemaAsync(tableName, cancellationToken);
+        await EnsureTableAsync(tableName, cancellationToken);
 
         var sql = $"""
             SELECT "Id", "Data", "Valor"
@@ -86,7 +73,7 @@ public class BacenRepository : IBacenRepository
         return registros;
     }
 
-    private async Task EnsureSchemaAsync(string tableName, CancellationToken cancellationToken)
+    private async Task EnsureTableAsync(string tableName, CancellationToken cancellationToken)
     {
         if (ValidatedTables.Contains(tableName))
         {
@@ -102,19 +89,16 @@ public class BacenRepository : IBacenRepository
                 return;
             }
 
-            var schema = await ObterSchemaTabelaAsync(tableName, cancellationToken);
+            await EnsureTimescaleExtensionAsync(cancellationToken);
 
-            if (!schema.Existe)
-            {
-                await CriarTabelaAsync(tableName, cancellationToken);
-            }
-            else if (!schema.EhCompativel)
-            {
-                await MigrarTabelaLegadaAsync(tableName, cancellationToken);
-            }
+            var tableExists = await TableExistsAsync(tableName, cancellationToken);
+            var hasExpectedSchema = tableExists && await HasExpectedSchemaAsync(tableName, cancellationToken);
+            var isHypertable = tableExists && await IsHypertableAsync(tableName, cancellationToken);
 
-            await RemoverDuplicadosAsync(tableName, cancellationToken);
-            await GarantirConstraintUnicaAsync(tableName, cancellationToken);
+            if (!tableExists || !hasExpectedSchema || !isHypertable)
+            {
+                await RecreateTableAsync(tableName, cancellationToken);
+            }
 
             ValidatedTables.Add(tableName);
         }
@@ -124,7 +108,36 @@ public class BacenRepository : IBacenRepository
         }
     }
 
-    private async Task<TabelaSchemaInfo> ObterSchemaTabelaAsync(string tableName, CancellationToken cancellationToken)
+    private async Task EnsureTimescaleExtensionAsync(CancellationToken cancellationToken)
+    {
+        const string sql = """
+            CREATE EXTENSION IF NOT EXISTS timescaledb;
+            """;
+
+        await _context.ExecuteNonQueryAsync(sql, cancellationToken: cancellationToken);
+    }
+
+    private async Task<bool> TableExistsAsync(string tableName, CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM information_schema.tables
+                WHERE table_schema = 'public'
+                  AND table_name = @tableName
+            );
+            """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@tableName", tableName)
+        };
+
+        var result = await _context.ExecuteScalarAsync(sql, parameters, cancellationToken);
+        return result is bool exists && exists;
+    }
+
+    private async Task<bool> HasExpectedSchemaAsync(string tableName, CancellationToken cancellationToken)
     {
         const string sql = """
             SELECT column_name, data_type
@@ -134,136 +147,78 @@ public class BacenRepository : IBacenRepository
             ORDER BY ordinal_position;
             """;
 
-        var columns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var parameters = new[]
         {
             new NpgsqlParameter("@tableName", tableName)
         };
 
-        using var reader = await _context.ExecuteReaderAsync(sql, parameters, cancellationToken);
+        var columns = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        using var reader = await _context.ExecuteReaderAsync(sql, parameters, cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {
             columns[reader.GetString(0)] = reader.GetString(1);
         }
 
-        return new TabelaSchemaInfo(columns);
+        return columns.Count == 3
+            && columns.TryGetValue("Id", out var idType)
+            && string.Equals(idType, "uuid", StringComparison.OrdinalIgnoreCase)
+            && columns.TryGetValue("Data", out var dataType)
+            && string.Equals(dataType, "date", StringComparison.OrdinalIgnoreCase)
+            && columns.TryGetValue("Valor", out var valorType)
+            && string.Equals(valorType, "numeric", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task CriarTabelaAsync(string tableName, CancellationToken cancellationToken)
+    private async Task<bool> IsHypertableAsync(string tableName, CancellationToken cancellationToken)
     {
-        var sql = $"""
-            CREATE TABLE IF NOT EXISTS {tableName} (
-                "Id" UUID PRIMARY KEY,
+        const string sql = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM timescaledb_information.hypertables
+                WHERE hypertable_schema = 'public'
+                  AND hypertable_name = @tableName
+            );
+            """;
+
+        var parameters = new[]
+        {
+            new NpgsqlParameter("@tableName", tableName)
+        };
+
+        var result = await _context.ExecuteScalarAsync(sql, parameters, cancellationToken);
+        return result is bool exists && exists;
+    }
+
+    private async Task RecreateTableAsync(string tableName, CancellationToken cancellationToken)
+    {
+        var dropTableSql = $"DROP TABLE IF EXISTS {tableName};";
+        var createTableSql = $"""
+            CREATE TABLE {tableName} (
+                "Id" UUID NOT NULL,
                 "Data" DATE NOT NULL,
                 "Valor" NUMERIC(10,4) NOT NULL
             );
             """;
-
-        await _context.ExecuteNonQueryAsync(sql, cancellationToken: cancellationToken);
-    }
-
-    private async Task MigrarTabelaLegadaAsync(string tableName, CancellationToken cancellationToken)
-    {
-        var tempTableName = $"{tableName}_schema_fix";
-        var backupTableName = $"{tableName}_legacy_{DateTime.UtcNow:yyyyMMddHHmmss}";
-        var hashExpression = "md5(\"Data\"::text || '|' || COALESCE(\"Valor\"::text, ''))";
-
-        var dropTempTableSql = $"DROP TABLE IF EXISTS {tempTableName};";
-        await _context.ExecuteNonQueryAsync(dropTempTableSql, cancellationToken: cancellationToken);
-
-        await CriarTabelaAsync(tempTableName, cancellationToken);
-
-        var migrateDataSql = $"""
-            INSERT INTO {tempTableName} ("Id", "Data", "Valor")
-            SELECT DISTINCT ON ("Data"::date)
-                (
-                    SUBSTRING({hashExpression}, 1, 8) || '-' ||
-                    SUBSTRING({hashExpression}, 9, 4) || '-' ||
-                    SUBSTRING({hashExpression}, 13, 4) || '-' ||
-                    SUBSTRING({hashExpression}, 17, 4) || '-' ||
-                    SUBSTRING({hashExpression}, 21, 12)
-                )::uuid,
-                "Data"::date,
-                ROUND("Valor"::numeric, 4)
-            FROM {tableName}
-            ORDER BY "Data"::date, "Id";
+        var createHypertableSql = $"""
+            SELECT create_hypertable('{tableName}', 'Data', if_not_exists => true);
+            """;
+        var createIndexSql = $"""
+            CREATE UNIQUE INDEX "IX_{tableName}_Data_Unique" ON {tableName} ("Data");
             """;
 
-        var renameOldTableSql = $"ALTER TABLE {tableName} RENAME TO {backupTableName};";
-        var renameTempTableSql = $"ALTER TABLE {tempTableName} RENAME TO {tableName};";
-
-        await _context.ExecuteNonQueryAsync(migrateDataSql, cancellationToken: cancellationToken);
-        await _context.ExecuteNonQueryAsync(renameOldTableSql, cancellationToken: cancellationToken);
-        await _context.ExecuteNonQueryAsync(renameTempTableSql, cancellationToken: cancellationToken);
-    }
-
-    private async Task RemoverDuplicadosAsync(string tableName, CancellationToken cancellationToken)
-    {
-        var sql = $"""
-            WITH registros_duplicados AS (
-                SELECT ctid,
-                       ROW_NUMBER() OVER (PARTITION BY "Data" ORDER BY "Id") AS linha
-                FROM {tableName}
-            )
-            DELETE FROM {tableName}
-            WHERE ctid IN (
-                SELECT ctid
-                FROM registros_duplicados
-                WHERE linha > 1
-            );
-            """;
-
-        await _context.ExecuteNonQueryAsync(sql, cancellationToken: cancellationToken);
-    }
-
-    private async Task GarantirConstraintUnicaAsync(string tableName, CancellationToken cancellationToken)
-    {
-        var indexName = $"IX_{tableName}_Data_Unique";
-        var sql = $"""
-            DO $$
-            BEGIN
-                IF NOT EXISTS (
-                    SELECT 1
-                    FROM pg_indexes
-                    WHERE schemaname = 'public'
-                      AND tablename = '{tableName}'
-                      AND (
-                          indexname = '{indexName}'
-                          OR indexdef ILIKE 'CREATE UNIQUE INDEX%("Data")%'
-                      )
-                ) THEN
-                    CREATE UNIQUE INDEX "{indexName}" ON {tableName} ("Data");
-                END IF;
-            END
-            $$;
-            """;
-
-        await _context.ExecuteNonQueryAsync(sql, cancellationToken: cancellationToken);
+        await _context.ExecuteNonQueryAsync(dropTableSql, cancellationToken: cancellationToken);
+        await _context.ExecuteNonQueryAsync(createTableSql, cancellationToken: cancellationToken);
+        await _context.ExecuteScalarAsync(createHypertableSql, cancellationToken: cancellationToken);
+        await _context.ExecuteNonQueryAsync(createIndexSql, cancellationToken: cancellationToken);
     }
 
     private static string ObterNomeTabela(BacenSerie serie)
     {
         if (!Enum.IsDefined(serie))
-            throw new InvalidOperationException($"Serie sem tabela configurada: {serie}.");
-
-        return serie.ToString().ToLowerInvariant();
-    }
-
-    private sealed class TabelaSchemaInfo
-    {
-        public TabelaSchemaInfo(IReadOnlyDictionary<string, string> columns)
         {
-            Columns = columns;
+            throw new InvalidOperationException($"Serie sem tabela configurada: {serie}.");
         }
 
-        private IReadOnlyDictionary<string, string> Columns { get; }
-
-        public bool Existe => Columns.Count > 0;
-
-        public bool EhCompativel =>
-            Columns.TryGetValue("Id", out var idType) && string.Equals(idType, "uuid", StringComparison.OrdinalIgnoreCase)
-            && Columns.TryGetValue("Data", out var dataType) && string.Equals(dataType, "date", StringComparison.OrdinalIgnoreCase)
-            && Columns.TryGetValue("Valor", out var valorType) && string.Equals(valorType, "numeric", StringComparison.OrdinalIgnoreCase);
+        return serie.ToString().ToLowerInvariant();
     }
 }
