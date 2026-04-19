@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MonitorEconomic.Application.Bacen.Parsing;
 using MonitorEconomic.Application.Mediator.Bacen.Commands;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
+using MonitorEconomic.Domain.Enums;
 
 [ApiExplorerSettings(GroupName = "v1")]
 [ApiController]
@@ -19,11 +19,9 @@ public class BacenController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetBacen( string? serie, string dataInicial, string dataFinal, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBacen(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken)
     {
-        TryValidarSerie(serie);
-
-        var query = new GetBacenQuery(serie!, dataInicial, dataFinal);
+        var query = new GetBacenQuery(serie, dataInicial, dataFinal);
         var resultado = await _mediator.Send(query, cancellationToken);
 
         if (resultado.Count > 0)
@@ -31,7 +29,7 @@ public class BacenController : ControllerBase
             return Ok(resultado);
         }
 
-        var command = new RefreshBacenCommand(serie!, dataInicial, dataFinal);
+        var command = new RefreshBacenCommand(serie, dataInicial, dataFinal);
         var atualizado = await _mediator.Send(command, cancellationToken);
        
        if (atualizado.Count == 0)
@@ -40,22 +38,5 @@ public class BacenController : ControllerBase
         }
 
         return Ok(atualizado);
-    }
-
-    private bool TryValidarSerie(string? serie)
-    {
-        if (string.IsNullOrWhiteSpace(serie))
-        {
-            ModelState.AddModelError(nameof(serie), "O parâmetro serie é obrigatório.");
-            return false;
-        }
-
-        if (!BacenSerieParser.IsValid(serie))
-        {
-            ModelState.AddModelError(nameof(serie), "O parâmetro serie é inválido.");
-            return false;
-        }
-
-        return true;
     }
 }

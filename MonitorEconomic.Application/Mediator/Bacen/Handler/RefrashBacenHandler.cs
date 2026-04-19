@@ -27,11 +27,10 @@ public class RefreshBacenHandler : IRequestHandler<RefreshBacenCommand, List<Bac
 
     public async Task<List<BacenDto>> Handle(RefreshBacenCommand request, CancellationToken cancellationToken)
     {
-        var serie = BacenSerieParser.Parse(request.SerieTexto);
         var (dataInicial, dataFinal) = BacenDateRangeParser.Parse(request.DataInicial, request.DataFinal);
 
         List<BacenDomain> registros = await _bacenService.obterBacenAsync(
-            serie,
+            request.Serie,
             request.DataInicial,
             request.DataFinal,
             cancellationToken
@@ -42,7 +41,7 @@ public class RefreshBacenHandler : IRequestHandler<RefreshBacenCommand, List<Bac
             await _bacenRepository.salvarAsync(registro, cancellationToken);
         }
 
-        await _bacenCache.salvarAsync(serie, dataInicial, dataFinal, registros, cancellationToken);
+        await _bacenCache.salvarAsync(request.Serie, dataInicial, dataFinal, registros, cancellationToken);
 
         return _mapper.Map<List<BacenDto>>(registros);
     }
