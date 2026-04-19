@@ -6,7 +6,6 @@ using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Abstractions.Cache;
 using MonitorEconomic.Domain.Interfaces.Service;
 using MonitorEconomic.Domain.Entities;
-using MonitorEconomic.Application.Bacen.Parsing;
 
 namespace MonitorEconomic.Application.Mediator.Bacen.Handler;
 
@@ -27,8 +26,6 @@ public class RefreshBacenHandler : IRequestHandler<RefreshBacenCommand, List<Bac
 
     public async Task<List<BacenDto>> Handle(RefreshBacenCommand request, CancellationToken cancellationToken)
     {
-        var (dataInicial, dataFinal) = BacenDateRangeParser.Parse(request.DataInicial, request.DataFinal);
-
         List<BacenDomain> registros = await _bacenService.obterBacenAsync(
             request.Serie,
             request.DataInicial,
@@ -41,7 +38,7 @@ public class RefreshBacenHandler : IRequestHandler<RefreshBacenCommand, List<Bac
             await _bacenRepository.salvarAsync(registro, cancellationToken);
         }
 
-        await _bacenCache.salvarAsync(request.Serie, dataInicial, dataFinal, registros, cancellationToken);
+        await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, registros, cancellationToken);
 
         return _mapper.Map<List<BacenDto>>(registros);
     }

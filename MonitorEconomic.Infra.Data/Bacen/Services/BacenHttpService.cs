@@ -24,19 +24,13 @@ public class BacenHttpService : IBacenService
         _serieStrategies = serieStrategies.ToDictionary(strategy => strategy.Serie);
     }
 
-    public async Task<List<BacenDomain>> obterBacenAsync(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken = default)
+    public async Task<List<BacenDomain>> obterBacenAsync(BacenSerie serie, DateTime dataInicial, DateTime dataFinal, CancellationToken cancellationToken = default)
     {
-        if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataInicialParsed))
-            throw new ArgumentException("data Inicial deve estar com formato em dd/MM/yyyy", nameof(dataInicial));
-
-        if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataFinalParsed))
-            throw new ArgumentException("data Final deve estar com formato em dd/MM/yyyy", nameof(dataFinal));
-
         if (string.IsNullOrWhiteSpace(_bacenApiOptions.SeriesUrlTemplate))
             throw new InvalidOperationException("A configuração BacenApi:SeriesUrlTemplate não foi informada.");
 
-        var dataInicialFormatada = dataInicialParsed.ToString("dd/MM/yyyy");
-        var dataFinalFormatada = dataFinalParsed.ToString("dd/MM/yyyy");
+        var dataInicialFormatada = dataInicial.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        var dataFinalFormatada = dataFinal.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         var codigoSerie = ObterCodigoSerie(serie);
 
         var url = _bacenApiOptions.SeriesUrlTemplate

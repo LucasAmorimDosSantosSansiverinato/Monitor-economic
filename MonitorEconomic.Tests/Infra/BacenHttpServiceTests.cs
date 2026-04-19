@@ -34,7 +34,7 @@ public class BacenHttpServiceTests
             });
             var service = new BacenHttpService(httpClient, options, new[] { new IpcBacenSerieStrategy() });
 
-            var result = await service.obterBacenAsync(BacenSerie.Ipc, "10/04/2026", "11/04/2026");
+            var result = await service.obterBacenAsync(BacenSerie.Ipc, new DateTime(2026, 4, 10), new DateTime(2026, 4, 11));
 
             Assert.Single(result);
             Assert.Equal(new DateTime(2026, 4, 11), result[0].Data);

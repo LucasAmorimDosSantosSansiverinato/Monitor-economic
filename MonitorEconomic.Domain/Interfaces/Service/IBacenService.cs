@@ -5,5 +5,5 @@ namespace MonitorEconomic.Domain.Interfaces.Service;
 
 public interface IBacenService
 {
-    Task<List<BacenDomain>> obterBacenAsync(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken = default);
+    Task<List<BacenDomain>> obterBacenAsync(BacenSerie serie, DateTime dataInicial, DateTime dataFinal, CancellationToken cancellationToken = default);
 }

@@ -6,7 +6,7 @@ namespace MonitorEconomic.Application.Mediator.Bacen.Commands;
 
 public class RefreshBacenCommand : IRequest<List<BacenDto>>
 {
-    public RefreshBacenCommand(BacenSerie serie, string dataInicial, string dataFinal)
+    public RefreshBacenCommand(BacenSerie serie, DateTime dataInicial, DateTime dataFinal)
     {
         Serie = serie;
         DataInicial = dataInicial;
@@ -14,6 +14,6 @@ public class RefreshBacenCommand : IRequest<List<BacenDto>>
     }
 
     public BacenSerie Serie { get; set; }
-    public string DataInicial { get; set; }
-    public string DataFinal { get; set; }
+    public DateTime DataInicial { get; set; }
+    public DateTime DataFinal { get; set; }
 }   

@@ -1,6 +1,5 @@
 using MediatR;
 using MonitorEconomic.Application.Dto;
-using MonitorEconomic.Application.Bacen.Parsing;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
 using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Abstractions.Cache;
@@ -23,18 +22,16 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
 
     public async Task<List<BacenDto>> Handle(GetBacenQuery request, CancellationToken cancellationToken)
     {
-        var (dataInicial, dataFinal) = BacenDateRangeParser.Parse(request.DataInicial, request.DataFinal);
-
-        var registrosEmCache = await _bacenCache.obterAsync(request.Serie, dataInicial, dataFinal, cancellationToken);
+        var registrosEmCache = await _bacenCache.obterAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
         if (registrosEmCache is { Count: > 0 })
         {
             return _mapper.Map<List<BacenDto>>(registrosEmCache);
         }
 
-        var registrosNoBanco = await _bacenRepository.obterPorPeriodoAsync(request.Serie, dataInicial, dataFinal, cancellationToken);
+        var registrosNoBanco = await _bacenRepository.obterPorPeriodoAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
         if (registrosNoBanco.Count > 0)
         {
-            await _bacenCache.salvarAsync(request.Serie, dataInicial, dataFinal, registrosNoBanco, cancellationToken);
+            await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, registrosNoBanco, cancellationToken);
             return _mapper.Map<List<BacenDto>>(registrosNoBanco);
         }
  
