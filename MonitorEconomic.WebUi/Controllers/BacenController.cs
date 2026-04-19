@@ -19,7 +19,7 @@ public class BacenController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> GetBacen([FromQuery] string? serie, [FromQuery] string dataInicial, [FromQuery] string dataFinal, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetBacen( string? serie, string dataInicial, string dataFinal, CancellationToken cancellationToken)
     {
         TryValidarSerie(serie);
 
