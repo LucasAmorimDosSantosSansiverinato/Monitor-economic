@@ -19,7 +19,7 @@ public class GetBacenHandlerTests
         var cache = new Mock<IBacenCache>();
         var repository = new Mock<IBacenRepository>(MockBehavior.Strict);
         var mapper = CriarMapper();
-        var query = new GetBacenQuery("Ipc", "01/01/2024", "31/01/2024");
+        var query = new GetBacenQuery(BacenSerie.Ipc, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
         var registros = CriarRegistros(BacenSerie.Ipc);
 
         cache
@@ -41,7 +41,7 @@ public class GetBacenHandlerTests
         var cache = new Mock<IBacenCache>();
         var repository = new Mock<IBacenRepository>();
         var mapper = CriarMapper();
-        var query = new GetBacenQuery("Dolar", "01/01/2024", "31/01/2024");
+        var query = new GetBacenQuery(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
         var registros = CriarRegistros(BacenSerie.Dolar);
 
         cache
@@ -71,7 +71,7 @@ public class GetBacenHandlerTests
         var cache = new Mock<IBacenCache>();
         var repository = new Mock<IBacenRepository>(MockBehavior.Strict);
         var mapper = CriarMapper();
-        var query = new GetBacenQuery("Euro", "01/01/2024", "31/01/2024");
+        var query = new GetBacenQuery(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
 
         cache
             .Setup(c => c.obterAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
