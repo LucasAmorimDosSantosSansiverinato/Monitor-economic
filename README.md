@@ -1,6 +1,7 @@
 Arquitetura de soluções:
 
-<img width="1419" height="714" alt="image" src="https://github.com/user-attachments/assets/db391ac8-ccd8-4f3f-881e-08110df784f5" />
+<img width="1976" height="1059" alt="image" src="https://github.com/user-attachments/assets/6ffc96fa-dfde-4940-8184-4f7072e7b925" />
+
 
 
 
