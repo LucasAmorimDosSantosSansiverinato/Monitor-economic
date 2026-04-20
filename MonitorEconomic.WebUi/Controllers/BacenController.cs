@@ -22,7 +22,9 @@ public class BacenController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetBacen(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken)
     {
-        var (dataInicialConvertida, dataFinalConvertida) = ParseDateRange(dataInicial, dataFinal);
+        var datas = ParseDateRange(dataInicial, dataFinal);
+        DateTime dataInicialConvertida = datas.DataInicial;
+        DateTime dataFinalConvertida = datas.DataFinal;
 
         var query = new GetBacenQuery(serie, dataInicialConvertida, dataFinalConvertida);
         var resultado = await _mediator.Send(query, cancellationToken);
@@ -32,7 +34,7 @@ public class BacenController : ControllerBase
             return Ok(resultado);
         }
 
-        var command = new RefreshBacenCommand(serie, dataInicialConvertida, dataFinalConvertida);
+        RefreshBacenCommand command = new RefreshBacenCommand(serie, dataInicialConvertida, dataFinalConvertida);
         var atualizado = await _mediator.Send(command, cancellationToken);
        
        if (atualizado.Count == 0)
@@ -45,12 +47,12 @@ public class BacenController : ControllerBase
 
     private static (DateTime DataInicial, DateTime DataFinal) ParseDateRange(string dataInicial, string dataFinal)
     {
-        if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataInicialConvertida))
+        if (!DateTime.TryParseExact(dataInicial, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dataInicialConvertida))
         {
             throw new ArgumentException("data Inicial deve estar com formato em dd/MM/yyyy", nameof(dataInicial));
         }
 
-        if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dataFinalConvertida))
+        if (!DateTime.TryParseExact(dataFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dataFinalConvertida))
         {
             throw new ArgumentException("data Final deve estar com formato em dd/MM/yyyy", nameof(dataFinal));
         }
