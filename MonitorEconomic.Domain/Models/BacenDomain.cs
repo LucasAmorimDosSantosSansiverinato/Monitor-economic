@@ -41,17 +41,4 @@ public class BacenDomain
         Data = data;
         Valor = valor;
     }
-
-    public void AtualizarValor(decimal novoValor)
-    {
-        Valor = novoValor;
-    }
-
-    public void AtualizarData(DateTime novaData)
-    {
-        if (novaData > DateTime.UtcNow)
-            throw new DomainException("A data não pode ser futura.");
-
-        Data = novaData;
-    }
 }
