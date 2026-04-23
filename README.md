@@ -171,6 +171,14 @@ Os testes automatizados estão no projeto `MonitorEconomic.Tests` e podem ser ex
 dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj
 ```
 
+### Rodar todos os testes com cobertura
+
+```bash
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --collect:"XPlat Code Coverage"
+```
+
+O relatório de cobertura é gerado dentro de `MonitorEconomic.Tests/TestResults/`.
+
 ### Rodar testes por camada
 
 ```bash
@@ -218,7 +226,7 @@ dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "Name~Ha
 dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --collect:"XPlat Code Coverage"
 ```
 
-> Observação: os testes da camada Web dependem da inicialização completa da API. Se houver falha estrutural no ambiente da aplicação, como ausência de arquivos esperados em `wwwroot`, apenas os testes `MonitorEconomic.Tests.Web` podem falhar enquanto os testes de domínio, aplicação e infra continuam executando normalmente.
+> Observação: os testes da camada Web sobem a aplicação completa com `WebApplicationFactory`. Se houver falha de inicialização ou de validação na API, o comando geral também irá refletir isso. Os artefatos gerados em `TestResults` estão ignorados no git.
 
 ## 🏛️ Estrutura do Projeto
 
