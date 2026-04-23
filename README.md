@@ -161,6 +161,65 @@ curl "http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal
 
 1. **GET** `http://localhost:8080/api/bacen?serie=Ipc&dataInicial=01/01/2024&dataFinal=31/01/2024`
 
+## ✅ Executando os testes
+
+Os testes automatizados estão no projeto `MonitorEconomic.Tests` e podem ser executados pela solução inteira ou por arquivo/categoria.
+
+### Rodar todos os testes
+
+```bash
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj
+```
+
+### Rodar testes por camada
+
+```bash
+# Domínio
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~MonitorEconomic.Tests.Domain"
+
+# Application
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~MonitorEconomic.Tests.Application"
+
+# Infra
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~MonitorEconomic.Tests.Infra"
+
+# Web
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~MonitorEconomic.Tests.Web"
+```
+
+### Rodar testes por arquivo/classe
+
+```bash
+# GetBacenHandlerTests
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~GetBacenHandlerTests"
+
+# RefreshBacenHandlerTests
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~RefreshBacenHandlerTests"
+
+# BacenDomainTests
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~BacenDomainTests"
+
+# BacenHttpServiceTests
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~BacenHttpServiceTests"
+
+# BacenApiIntegrationTests
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "FullyQualifiedName~BacenApiIntegrationTests"
+```
+
+### Rodar um teste específico por nome
+
+```bash
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --filter "Name~Handle_UsesCacheBeforeDatabaseAndExternalService"
+```
+
+### Coletar cobertura de testes
+
+```bash
+dotnet test MonitorEconomic.Tests/MonitorEconomic.Tests.csproj --collect:"XPlat Code Coverage"
+```
+
+> Observação: os testes da camada Web dependem da inicialização completa da API. Se houver falha estrutural no ambiente da aplicação, como ausência de arquivos esperados em `wwwroot`, apenas os testes `MonitorEconomic.Tests.Web` podem falhar enquanto os testes de domínio, aplicação e infra continuam executando normalmente.
+
 ## 🏛️ Estrutura do Projeto
 
 ```
