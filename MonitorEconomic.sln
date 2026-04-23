@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.WebUi", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Tests", "MonitorEconomic.Tests\MonitorEconomic.Tests.csproj", "{678F43DB-6F97-43CB-A213-5F090FDA36DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Abstractions", "MonitorEconomic.Abstractions\MonitorEconomic.Abstractions.csproj", "{BC570000-DDF5-40B2-8AD1-6CF685A581A4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,18 +97,6 @@ Global
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x64.Build.0 = Release|Any CPU
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{678F43DB-6F97-43CB-A213-5F090FDA36DB}.Release|x86.Build.0 = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|x64.Build.0 = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Debug|x86.Build.0 = Debug|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|x64.ActiveCfg = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|x64.Build.0 = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|x86.ActiveCfg = Release|Any CPU
-		{BC570000-DDF5-40B2-8AD1-6CF685A581A4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MonitorEconomic.Application.Cache;
 using MonitorEconomic.Domain.Interfaces.IRepository;
 using MonitorEconomic.Domain.Interfaces.Service;
 using MonitorEconomic.Infra.Data.Repository;
@@ -11,7 +12,6 @@ using MonitorEconomic.Infra.Data.Bacen.Configuration;
 using MonitorEconomic.Infra.Data.Bacen.Services;
 using MonitorEconomic.Infra.Data.Bacen.Strategies;
 using MonitorEconomic.Infra.Data.Cache;
-using MonitorEconomic.Abstractions.Cache;
 
 namespace MonitorEconomic.Infra.Ioc;
 
@@ -35,7 +35,8 @@ public static class DependencyInjection
             return new MonitorEconomicDbContext(connectionString);
         });
     
-        services.AddSingleton<IBacenCache, InMemoryBacenCache>();
+        services.AddSingleton<InMemoryBacenCache>();
+        services.AddSingleton<IBacenCache, BacenCacheAdapter>();
         services.AddTransient<IBacenRepository, BacenRepository>();   
         services.AddTransient<IBacenSerieStrategy, IpcBacenSerieStrategy>();
         services.AddTransient<IBacenSerieStrategy, DolarBacenSerieStrategy>();

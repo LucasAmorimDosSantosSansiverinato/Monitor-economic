@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonitorEconomic.Abstractions\MonitorEconomic.Abstractions.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
   </ItemGroup>
 

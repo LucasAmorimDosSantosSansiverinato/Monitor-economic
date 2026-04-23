@@ -1,11 +1,10 @@
 using System.Collections.Concurrent;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
-using MonitorEconomic.Abstractions.Cache;
 
 namespace MonitorEconomic.Infra.Data.Cache;
 
-public class InMemoryBacenCache : IBacenCache
+public class InMemoryBacenCache
 {
     private static readonly ConcurrentDictionary<string, CacheEntry> Entries = new(StringComparer.Ordinal);
     private static readonly SemaphoreSlim CacheLock = new(1, 1);

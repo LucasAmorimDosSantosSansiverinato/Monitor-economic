@@ -1,9 +1,9 @@
 using AutoMapper;
 using Moq;
+using MonitorEconomic.Application.Cache;
 using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Mediator.Bacen.Handler;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
-using MonitorEconomic.Abstractions.Cache;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
 using MonitorEconomic.Domain.Interfaces.IRepository;

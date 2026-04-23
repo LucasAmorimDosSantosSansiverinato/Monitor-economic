@@ -1,7 +1,7 @@
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
 
-namespace MonitorEconomic.Abstractions.Cache;
+namespace MonitorEconomic.Application.Cache;
 
 public interface IBacenCache
 {

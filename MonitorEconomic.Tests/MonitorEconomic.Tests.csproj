@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MonitorEconomic.Abstractions\MonitorEconomic.Abstractions.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />

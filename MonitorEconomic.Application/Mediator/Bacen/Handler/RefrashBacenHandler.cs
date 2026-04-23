@@ -1,9 +1,9 @@
 using AutoMapper;
 using MediatR;
+using MonitorEconomic.Application.Cache;
 using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Mediator.Bacen.Commands;
 using MonitorEconomic.Domain.Interfaces.IRepository;
-using MonitorEconomic.Abstractions.Cache;
 using MonitorEconomic.Domain.Interfaces.Service;
 using MonitorEconomic.Domain.Entities;
 

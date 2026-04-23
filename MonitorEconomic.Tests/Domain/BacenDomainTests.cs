@@ -30,4 +30,28 @@ public class BacenDomainTests
 
         Assert.Throws<DomainException>(action);
     }
+
+    [Fact]
+    public void Constructor_WithEmptyId_ThrowsDomainException()
+    {
+        var action = () => new BacenDomain(Guid.Empty, BacenSerie.Ipc, DateTime.UtcNow.Date, 0.65m);
+
+        Assert.Throws<DomainException>(action);
+    }
+
+    [Fact]
+    public void Constructor_WithInvalidSerie_ThrowsDomainException()
+    {
+        var action = () => new BacenDomain((BacenSerie)999, DateTime.UtcNow.Date, 0.65m);
+
+        Assert.Throws<DomainException>(action);
+    }
+
+    [Fact]
+    public void Constructor_WithMinValueDate_ThrowsDomainException()
+    {
+        var action = () => new BacenDomain(BacenSerie.Ipc, DateTime.MinValue, 0.65m);
+
+        Assert.Throws<DomainException>(action);
+    }
 }
