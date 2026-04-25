@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
+    <ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MonitorEconomic.Application.Mediator.Bacen.Commands;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
 using MonitorEconomic.Domain.Enums;
 using System.Globalization;
@@ -20,29 +19,18 @@ public class BacenController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetBacen(BacenSerie serie, string dataInicial, string dataFinal, CancellationToken cancellationToken)
     {
         var datas = ParseDateRange(dataInicial, dataFinal);
-        DateTime dataInicialConvertida = datas.DataInicial;
-        DateTime dataFinalConvertida = datas.DataFinal;
 
-        var query = new GetBacenQuery(serie, dataInicialConvertida, dataFinalConvertida);
+        var query = new GetBacenQuery(serie, datas.DataInicial, datas.DataFinal);
         var resultado = await _mediator.Send(query, cancellationToken);
 
-        if (resultado.Count > 0)
-        {
-            return Ok(resultado);
-        }
-
-        RefreshBacenCommand command = new RefreshBacenCommand(serie, dataInicialConvertida, dataFinalConvertida);
-        var atualizado = await _mediator.Send(command, cancellationToken);
-       
-       if (atualizado.Count == 0)
-        {
+        if (resultado.Count == 0)
             return NotFound();
-        }
 
-        return Ok(atualizado);
+        return Ok(resultado);
     }
 
     private static (DateTime DataInicial, DateTime DataFinal) ParseDateRange(string dataInicial, string dataFinal)

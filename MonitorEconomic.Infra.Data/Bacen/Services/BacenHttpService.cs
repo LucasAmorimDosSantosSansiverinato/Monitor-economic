@@ -5,7 +5,7 @@ using MonitorEconomic.Domain.Interfaces.Service;
 using Microsoft.Extensions.Options;
 using MonitorEconomic.Infra.Data.Bacen.Configuration;
 using MonitorEconomic.Infra.Data.Bacen.Models;
-using MonitorEconomic.Infra.Utils.Bacen.Abstractions;
+using MonitorEconomic.Infra.Data.Bacen.Abstractions;
 using System.Globalization;
 using System.Net.Http.Json;
 

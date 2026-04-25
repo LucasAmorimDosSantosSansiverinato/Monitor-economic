@@ -2,7 +2,10 @@ using MediatR;
 using MonitorEconomic.Application.Cache;
 using MonitorEconomic.Application.Dto;
 using MonitorEconomic.Application.Mediator.Bacen.Queries;
+using MonitorEconomic.Domain.Entities;
+using MonitorEconomic.Domain.Exceptions;
 using MonitorEconomic.Domain.Interfaces.IRepository;
+using MonitorEconomic.Domain.Interfaces.Service;
 using AutoMapper;
 
 namespace MonitorEconomic.Application.Mediator.Bacen.Handler;
@@ -11,12 +14,14 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
 {
     private readonly IBacenRepository _bacenRepository;
     private readonly IBacenCache _bacenCache;
+    private readonly IBacenService _bacenService;
     private readonly IMapper _mapper;
 
-    public GetBacenHandler(IBacenRepository bacenRepository, IBacenCache bacenCache, IMapper mapper)
+    public GetBacenHandler(IBacenRepository bacenRepository, IBacenCache bacenCache, IBacenService bacenService, IMapper mapper)
     {
         _bacenRepository = bacenRepository;
         _bacenCache = bacenCache;
+        _bacenService = bacenService;
         _mapper = mapper;
     }
 
@@ -29,12 +34,30 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
         }
 
         var registrosNoBanco = await _bacenRepository.obterPorPeriodoAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
-        if (registrosNoBanco.Count > 0)
+
+        List<BacenDomain> registrosDoBacen = new();
+        try
         {
-            await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, registrosNoBanco, cancellationToken);
-            return _mapper.Map<List<BacenDto>>(registrosNoBanco);
+            registrosDoBacen = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
+            foreach (var registro in registrosDoBacen)
+            {
+                await _bacenRepository.salvarAsync(registro, cancellationToken);
+            }
         }
- 
-        return new List<BacenDto>();
+        catch (BacenIntegrationException)
+        {
+            // Bacen indisponível — retorna o que existe no banco
+        }
+
+        var datasExistentes = registrosNoBanco.Select(r => r.Data.Date).ToHashSet();
+        var novosRegistros = registrosDoBacen.Where(r => !datasExistentes.Contains(r.Data.Date));
+        var merged = registrosNoBanco.Concat(novosRegistros).OrderBy(r => r.Data).ToList();
+
+        if (merged.Count > 0)
+        {
+            await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, merged, cancellationToken);
+        }
+
+        return _mapper.Map<List<BacenDto>>(merged);
     }
 }

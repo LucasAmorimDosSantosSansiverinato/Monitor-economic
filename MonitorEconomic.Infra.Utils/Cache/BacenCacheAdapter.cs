@@ -1,11 +1,11 @@
 using MonitorEconomic.Application.Cache;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
-using MonitorEconomic.Infra.Utils.Cache;
+using MonitorEconomic.Infra.Data.Cache;
 
-namespace MonitorEconomic.Infra.Ioc;
+namespace MonitorEconomic.Infra.Utils.Cache;
 
-internal sealed class BacenCacheAdapter : IBacenCache
+public sealed class BacenCacheAdapter : IBacenCache
 {
     private readonly InMemoryBacenCache _cache;
 

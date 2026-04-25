@@ -2,11 +2,11 @@ using System.Collections.Concurrent;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
 
-namespace MonitorEconomic.Infra.Utils.Cache;
+namespace MonitorEconomic.Infra.Data.Cache;
 
 public class InMemoryBacenCache
 {
-    private static readonly ConcurrentDictionary<string, CacheEntry> Entries = new(StringComparer.Ordinal);
+    private static readonly ConcurrentDictionary<BacenSerie, CacheEntry> Entries = new();
     private static readonly SemaphoreSlim CacheLock = new(1, 1);
     private static string? _ultimoMesLimpo;
 
@@ -14,19 +14,20 @@ public class InMemoryBacenCache
     {
         await LimparSeNecessarioAsync(cancellationToken);
 
-        var key = CriarChave(serie, dataInicial, dataFinal);
-        if (!Entries.TryGetValue(key, out var entry))
-        {
+        if (!Entries.TryGetValue(serie, out var entry))
             return null;
-        }
 
         if (entry.ExpiraEmUtc <= DateTime.UtcNow)
         {
-            Entries.TryRemove(key, out _);
+            Entries.TryRemove(serie, out _);
             return null;
         }
 
-        return entry.Registros;
+        var filtrado = entry.Registros
+            .Where(r => r.Data.Date >= dataInicial.Date && r.Data.Date <= dataFinal.Date)
+            .ToList();
+
+        return filtrado.Count > 0 ? filtrado : null;
     }
 
     public async Task salvarAsync(BacenSerie serie, DateTime dataInicial, DateTime dataFinal, IReadOnlyList<BacenDomain> registros, CancellationToken cancellationToken = default)
@@ -35,8 +36,17 @@ public class InMemoryBacenCache
 
         var agora = DateTime.UtcNow;
         var expiraEmUtc = CalcularExpiracao(serie, agora);
-        var key = CriarChave(serie, dataInicial, dataFinal);
-        Entries[key] = new CacheEntry(registros.ToList(), expiraEmUtc);
+
+        Entries.AddOrUpdate(
+            serie,
+            _ => new CacheEntry(registros.ToList(), expiraEmUtc),
+            (_, existente) =>
+            {
+                var datasExistentes = existente.Registros.Select(r => r.Data.Date).ToHashSet();
+                var novos = registros.Where(r => !datasExistentes.Contains(r.Data.Date));
+                var merged = existente.Registros.Concat(novos).OrderBy(r => r.Data).ToList();
+                return new CacheEntry(merged, expiraEmUtc);
+            });
     }
 
     private static async Task LimparSeNecessarioAsync(CancellationToken cancellationToken)
@@ -57,9 +67,7 @@ public class InMemoryBacenCache
             foreach (var entry in Entries)
             {
                 if (entry.Value.ExpiraEmUtc <= agora)
-                {
                     Entries.TryRemove(entry.Key, out _);
-                }
             }
         }
         finally
@@ -71,19 +79,12 @@ public class InMemoryBacenCache
     private static DateTime CalcularExpiracao(BacenSerie serie, DateTime agoraUtc)
     {
         if (serie is BacenSerie.Dolar or BacenSerie.Euro)
-        {
             return agoraUtc.Date.AddDays(1);
-        }
 
         var quinzeDias = agoraUtc.AddDays(15);
         var primeiroDiaDoProximoMes = new DateTime(agoraUtc.Year, agoraUtc.Month, 1, 0, 0, 0, DateTimeKind.Utc).AddMonths(1);
 
         return quinzeDias <= primeiroDiaDoProximoMes ? quinzeDias : primeiroDiaDoProximoMes;
-    }
-
-    private static string CriarChave(BacenSerie serie, DateTime dataInicial, DateTime dataFinal)
-    {
-        return string.Join(':', serie, dataInicial.ToString("yyyyMMdd"), dataFinal.ToString("yyyyMMdd"));
     }
 
     private sealed record CacheEntry(IReadOnlyList<BacenDomain> Registros, DateTime ExpiraEmUtc);

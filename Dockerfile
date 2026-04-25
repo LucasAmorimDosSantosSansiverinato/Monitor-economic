@@ -8,6 +8,7 @@ COPY MonitorEconomic.WebUi/MonitorEconomic.WebUi.csproj MonitorEconomic.WebUi/
 COPY MonitorEconomic.Application/MonitorEconomic.Application.csproj MonitorEconomic.Application/
 COPY MonitorEconomic.Domain/MonitorEconomic.Domain.csproj MonitorEconomic.Domain/
 COPY MonitorEconomic.Infra.Data/MonitorEconomic.Infra.Data.csproj MonitorEconomic.Infra.Data/
+COPY MonitorEconomic.Infra.Utils/MonitorEconomic.Infra.Utils.csproj MonitorEconomic.Infra.Utils/
 COPY MonitorEconomic.Ioc/MonitorEconomic.Infra.Ioc.csproj MonitorEconomic.Ioc/
 COPY MonitorEconomic.Tests/MonitorEconomic.Tests.csproj MonitorEconomic.Tests/
  
