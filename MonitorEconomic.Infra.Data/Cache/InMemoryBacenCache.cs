@@ -30,7 +30,7 @@ public class InMemoryBacenCache
         return filtrado.Count > 0 ? filtrado : null;
     }
 
-    public async Task salvarAsync(BacenSerie serie, DateTime dataInicial, DateTime dataFinal, IReadOnlyList<BacenDomain> registros, CancellationToken cancellationToken = default)
+    public async Task salvarAsync(BacenSerie serie, IReadOnlyList<BacenDomain> registros, CancellationToken cancellationToken = default)
     {
         await LimparSeNecessarioAsync(cancellationToken);
 
