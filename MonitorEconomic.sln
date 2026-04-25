@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Infra.Data"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Infra.Ioc", "MonitorEconomic.Ioc\MonitorEconomic.Infra.Ioc.csproj", "{FB525234-0E71-4DAB-A5FD-70D849265575}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Infra.Utils", "MonitorEconomic.Infra.Utils\MonitorEconomic.Infra.Utils.csproj", "{4654A774-083C-4B8E-B6A3-9329392AC7B5}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.WebUi", "MonitorEconomic.WebUi\MonitorEconomic.WebUi.csproj", "{482A2D24-E424-4C4C-A5B1-E9EB914044DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorEconomic.Tests", "MonitorEconomic.Tests\MonitorEconomic.Tests.csproj", "{678F43DB-6F97-43CB-A213-5F090FDA36DB}"
@@ -73,6 +75,18 @@ Global
 		{FB525234-0E71-4DAB-A5FD-70D849265575}.Release|x64.Build.0 = Release|Any CPU
 		{FB525234-0E71-4DAB-A5FD-70D849265575}.Release|x86.ActiveCfg = Release|Any CPU
 		{FB525234-0E71-4DAB-A5FD-70D849265575}.Release|x86.Build.0 = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|x64.Build.0 = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Debug|x86.Build.0 = Debug|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|x64.ActiveCfg = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|x64.Build.0 = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|x86.ActiveCfg = Release|Any CPU
+		{4654A774-083C-4B8E-B6A3-9329392AC7B5}.Release|x86.Build.0 = Release|Any CPU
 		{482A2D24-E424-4C4C-A5B1-E9EB914044DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{482A2D24-E424-4C4C-A5B1-E9EB914044DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{482A2D24-E424-4C4C-A5B1-E9EB914044DD}.Debug|x64.ActiveCfg = Debug|Any CPU

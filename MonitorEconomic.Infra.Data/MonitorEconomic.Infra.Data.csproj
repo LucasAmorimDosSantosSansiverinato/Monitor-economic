@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
+    <ProjectReference Include="..\MonitorEconomic.Infra.Utils\MonitorEconomic.Infra.Utils.csproj" />
   </ItemGroup>
 
 </Project>

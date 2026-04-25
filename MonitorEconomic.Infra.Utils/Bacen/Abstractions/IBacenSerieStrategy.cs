@@ -1,6 +1,6 @@
 using MonitorEconomic.Domain.Enums;
 
-namespace MonitorEconomic.Infra.Data.Bacen.Abstractions;
+namespace MonitorEconomic.Infra.Utils.Bacen.Abstractions;
 
 public interface IBacenSerieStrategy
 {

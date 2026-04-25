@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using MonitorEconomic.Domain.Entities;
 using MonitorEconomic.Domain.Enums;
 
-namespace MonitorEconomic.Infra.Data.Cache;
+namespace MonitorEconomic.Infra.Utils.Cache;
 
 public class InMemoryBacenCache
 {

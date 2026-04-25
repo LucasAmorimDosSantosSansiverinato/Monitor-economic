@@ -7,11 +7,11 @@ using MonitorEconomic.Infra.Data.Repository;
 using MonitorEconomic.Application.Mediator.Bacen.Handler;
 using MonitorEconomic.Application.Mapper;
 using MonitorEconomic.Infrastructure.Data.Context;
-using MonitorEconomic.Infra.Data.Bacen.Abstractions;
 using MonitorEconomic.Infra.Data.Bacen.Configuration;
 using MonitorEconomic.Infra.Data.Bacen.Services;
 using MonitorEconomic.Infra.Data.Bacen.Strategies;
-using MonitorEconomic.Infra.Data.Cache;
+using MonitorEconomic.Infra.Utils.Bacen.Abstractions;
+using MonitorEconomic.Infra.Utils.Cache;
 
 namespace MonitorEconomic.Infra.Ioc;
 

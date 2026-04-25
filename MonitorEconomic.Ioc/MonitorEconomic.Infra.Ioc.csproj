@@ -10,6 +10,7 @@
     <ProjectReference Include="..\MonitorEconomic.Application\MonitorEconomic.Application.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Domain\MonitorEconomic.Domain.csproj" />
     <ProjectReference Include="..\MonitorEconomic.Infra.Data\MonitorEconomic.Infra.Data.csproj" />
+    <ProjectReference Include="..\MonitorEconomic.Infra.Utils\MonitorEconomic.Infra.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
