@@ -38,7 +38,7 @@ public class RefreshBacenHandler : IRequestHandler<RefreshBacenCommand, List<Bac
             await _bacenRepository.salvarAsync(registro, cancellationToken);
         }
 
-        await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, registros, cancellationToken);
+        await _bacenCache.salvarAsync(request.Serie, registros, cancellationToken);
 
         return _mapper.Map<List<BacenDto>>(registros);
     }

@@ -33,7 +33,7 @@ public class RefreshBacenHandlerTests
             .Returns(Task.CompletedTask);
 
         cache
-            .Setup(c => c.salvarAsync(BacenSerie.Ipc, command.DataInicial, command.DataFinal, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 2), It.IsAny<CancellationToken>()))
+            .Setup(c => c.salvarAsync(BacenSerie.Ipc, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 2), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var handler = new RefreshBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
@@ -61,7 +61,7 @@ public class RefreshBacenHandlerTests
             .ReturnsAsync(registros);
 
         cache
-            .Setup(c => c.salvarAsync(BacenSerie.Euro, command.DataInicial, command.DataFinal, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 0), It.IsAny<CancellationToken>()))
+            .Setup(c => c.salvarAsync(BacenSerie.Euro, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 0), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var handler = new RefreshBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);

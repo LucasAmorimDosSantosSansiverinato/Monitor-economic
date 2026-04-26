@@ -25,11 +25,9 @@ public sealed class BacenCacheAdapter : IBacenCache
 
     public Task salvarAsync(
         BacenSerie serie,
-        DateTime dataInicial,
-        DateTime dataFinal,
         IReadOnlyList<BacenDomain> registros,
         CancellationToken cancellationToken = default)
     {
-        return _cache.salvarAsync(serie, dataInicial, dataFinal, registros, cancellationToken);
+        return _cache.salvarAsync(serie, registros, cancellationToken);
     }
 }

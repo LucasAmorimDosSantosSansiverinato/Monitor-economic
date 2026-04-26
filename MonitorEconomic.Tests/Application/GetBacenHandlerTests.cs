@@ -40,14 +40,19 @@ public class GetBacenHandlerTests
     }
 
     [Fact]
-    public async Task Handle_UsesDatabaseWhenCacheMisses_ComplementsWithBacenAndRefreshesCache()
+    public async Task Handle_BancoCoberturaTotal_NaoConsultaBacen()
     {
+        // DB cobre o range completo (primeiro = dataInicial, último = dataFinal) → Bacen não é chamado
         var cache = new Mock<IBacenCache>();
         var repository = new Mock<IBacenRepository>();
-        var bacenService = new Mock<IBacenService>();
+        var bacenService = new Mock<IBacenService>(MockBehavior.Strict);
         var mapper = CriarMapper();
         var query = new GetBacenQuery(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
-        var registrosBanco = CriarRegistros(BacenSerie.Dolar, new DateTime(2024, 1, 2));
+        var registrosBanco = new List<BacenDomain>
+        {
+            new(BacenSerie.Dolar, new DateTime(2024, 1, 1), 5.00m),
+            new(BacenSerie.Dolar, new DateTime(2024, 1, 31), 5.10m)
+        };
 
         cache
             .Setup(c => c.obterAsync(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
@@ -57,12 +62,47 @@ public class GetBacenHandlerTests
             .Setup(r => r.obterPorPeriodoAsync(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
             .ReturnsAsync(registrosBanco);
 
-        bacenService
-            .Setup(s => s.obterBacenAsync(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<BacenDomain>());
+        cache
+            .Setup(c => c.salvarAsync(BacenSerie.Dolar, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 2), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var handler = new GetBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
+
+        var resultado = await handler.Handle(query, CancellationToken.None);
+
+        Assert.Equal(2, resultado.Count);
+        bacenService.VerifyNoOtherCalls(); // Bacen não deve ser chamado
+        cache.VerifyAll();
+    }
+
+    [Fact]
+    public async Task Handle_BancoVazio_ConsultaBacenRangeCompleto()
+    {
+        var cache = new Mock<IBacenCache>();
+        var repository = new Mock<IBacenRepository>();
+        var bacenService = new Mock<IBacenService>();
+        var mapper = CriarMapper();
+        var query = new GetBacenQuery(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
+        var registrosBacen = CriarRegistros(BacenSerie.Euro, new DateTime(2024, 1, 10));
 
         cache
-            .Setup(c => c.salvarAsync(BacenSerie.Dolar, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 1), It.IsAny<CancellationToken>()))
+            .Setup(c => c.obterAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<BacenDomain>?)null);
+
+        repository
+            .Setup(r => r.obterPorPeriodoAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<BacenDomain>());
+
+        bacenService
+            .Setup(s => s.obterBacenAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(registrosBacen);
+
+        repository
+            .Setup(r => r.salvarAsync(It.IsAny<BacenDomain>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        cache
+            .Setup(c => c.salvarAsync(BacenSerie.Euro, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 1), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var handler = new GetBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
@@ -70,9 +110,55 @@ public class GetBacenHandlerTests
         var resultado = await handler.Handle(query, CancellationToken.None);
 
         Assert.Single(resultado);
-        repository.VerifyAll();
-        cache.VerifyAll();
+        bacenService.Verify(s => s.obterBacenAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_BancoParcialNoFinal_ConsultaBacenSomenteLacunaFinal()
+    {
+        // DB tem dados de 2024-01-01 a 2024-01-15, usuário pede até 2024-01-31
+        // Bacen deve ser consultado apenas de 2024-01-16 até 2024-01-31
+        var cache = new Mock<IBacenCache>();
+        var repository = new Mock<IBacenRepository>();
+        var bacenService = new Mock<IBacenService>();
+        var mapper = CriarMapper();
+        var query = new GetBacenQuery(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
+        var registrosBanco = new List<BacenDomain>
+        {
+            new(BacenSerie.Selic, new DateTime(2024, 1, 1), 10.5m),
+            new(BacenSerie.Selic, new DateTime(2024, 1, 15), 10.5m)
+        };
+        var registrosBacen = CriarRegistros(BacenSerie.Selic, new DateTime(2024, 1, 20));
+
+        cache
+            .Setup(c => c.obterAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((IReadOnlyList<BacenDomain>?)null);
+
+        repository
+            .Setup(r => r.obterPorPeriodoAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(registrosBanco);
+
+        // Bacen consultado apenas para a lacuna final: 2024-01-16 a 2024-01-31
+        bacenService
+            .Setup(s => s.obterBacenAsync(BacenSerie.Selic, new DateTime(2024, 1, 16), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(registrosBacen);
+
+        repository
+            .Setup(r => r.salvarAsync(It.IsAny<BacenDomain>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        cache
+            .Setup(c => c.salvarAsync(BacenSerie.Selic, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 3), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var handler = new GetBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
+
+        var resultado = await handler.Handle(query, CancellationToken.None);
+
+        Assert.Equal(3, resultado.Count);
         bacenService.VerifyAll();
+        // Garante que Bacen não foi chamado para o range completo
+        bacenService.Verify(s => s.obterBacenAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -101,59 +187,24 @@ public class GetBacenHandlerTests
         var resultado = await handler.Handle(query, CancellationToken.None);
 
         Assert.Empty(resultado);
-        repository.VerifyAll();
         bacenService.VerifyAll();
-    }
-
-    [Fact]
-    public async Task Handle_MergesDatabaseAndBacenResultsByDate()
-    {
-        var cache = new Mock<IBacenCache>();
-        var repository = new Mock<IBacenRepository>();
-        var bacenService = new Mock<IBacenService>();
-        var mapper = CriarMapper();
-        var query = new GetBacenQuery(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
-        var registrosBanco = CriarRegistros(BacenSerie.Selic, new DateTime(2024, 1, 2));
-        var registrosBacen = CriarRegistros(BacenSerie.Selic, new DateTime(2024, 1, 3));
-
-        cache
-            .Setup(c => c.obterAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((IReadOnlyList<BacenDomain>?)null);
-
-        repository
-            .Setup(r => r.obterPorPeriodoAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(registrosBanco);
-
-        bacenService
-            .Setup(s => s.obterBacenAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(registrosBacen);
-
-        repository
-            .Setup(r => r.salvarAsync(It.IsAny<BacenDomain>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        cache
-            .Setup(c => c.salvarAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 2), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        var handler = new GetBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
-
-        var resultado = await handler.Handle(query, CancellationToken.None);
-
-        Assert.Equal(2, resultado.Count);
-        repository.Verify(r => r.salvarAsync(It.IsAny<BacenDomain>(), It.IsAny<CancellationToken>()), Times.Once);
-        cache.VerifyAll();
     }
 
     [Fact]
     public async Task Handle_ReturnsDatabaseDataWhenBacenIsUnavailable()
     {
+        // DB tem dados mas Bacen está fora — deve retornar o que tem no banco
         var cache = new Mock<IBacenCache>();
         var repository = new Mock<IBacenRepository>();
         var bacenService = new Mock<IBacenService>();
         var mapper = CriarMapper();
         var query = new GetBacenQuery(BacenSerie.Ipc, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
-        var registrosBanco = CriarRegistros(BacenSerie.Ipc, new DateTime(2024, 1, 2));
+        // DB tem dados mas não cobre o final — vai tentar Bacen e falhar
+        var registrosBanco = new List<BacenDomain>
+        {
+            new(BacenSerie.Ipc, new DateTime(2024, 1, 1), 0.42m),
+            new(BacenSerie.Ipc, new DateTime(2024, 1, 15), 0.42m)
+        };
 
         cache
             .Setup(c => c.obterAsync(BacenSerie.Ipc, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
@@ -164,18 +215,18 @@ public class GetBacenHandlerTests
             .ReturnsAsync(registrosBanco);
 
         bacenService
-            .Setup(s => s.obterBacenAsync(BacenSerie.Ipc, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
+            .Setup(s => s.obterBacenAsync(BacenSerie.Ipc, new DateTime(2024, 1, 16), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new BacenIntegrationException("Bacen indisponível"));
 
         cache
-            .Setup(c => c.salvarAsync(BacenSerie.Ipc, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 1), It.IsAny<CancellationToken>()))
+            .Setup(c => c.salvarAsync(BacenSerie.Ipc, It.Is<IReadOnlyList<BacenDomain>>(items => items.Count == 2), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var handler = new GetBacenHandler(repository.Object, cache.Object, bacenService.Object, mapper.Object);
 
         var resultado = await handler.Handle(query, CancellationToken.None);
 
-        Assert.Single(resultado);
+        Assert.Equal(2, resultado.Count);
         repository.Verify(r => r.salvarAsync(It.IsAny<BacenDomain>(), It.IsAny<CancellationToken>()), Times.Never);
         cache.VerifyAll();
     }

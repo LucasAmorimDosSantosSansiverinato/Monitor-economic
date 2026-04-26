@@ -35,10 +35,31 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
 
         var registrosNoBanco = await _bacenRepository.obterPorPeriodoAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
 
+        var primeiraDataNoBanco = registrosNoBanco.FirstOrDefault()?.Data.Date;
+        var ultimaDataNoBanco = registrosNoBanco.LastOrDefault()?.Data.Date;
+
         List<BacenDomain> registrosDoBacen = new();
         try
         {
-            registrosDoBacen = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
+            if (primeiraDataNoBanco is null)
+            {
+                registrosDoBacen = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, request.DataFinal, cancellationToken);
+            }
+            else
+            {
+                if (request.DataInicial.Date < primeiraDataNoBanco.Value)
+                {
+                    var antes = await _bacenService.obterBacenAsync(request.Serie, request.DataInicial, primeiraDataNoBanco.Value.AddDays(-1), cancellationToken);
+                    registrosDoBacen.AddRange(antes);
+                }
+
+                if (request.DataFinal.Date > ultimaDataNoBanco!.Value)
+                {
+                    var depois = await _bacenService.obterBacenAsync(request.Serie, ultimaDataNoBanco.Value.AddDays(1), request.DataFinal, cancellationToken);
+                    registrosDoBacen.AddRange(depois);
+                }
+            }
+
             foreach (var registro in registrosDoBacen)
             {
                 await _bacenRepository.salvarAsync(registro, cancellationToken);
@@ -55,7 +76,7 @@ public class GetBacenHandler : IRequestHandler<GetBacenQuery, List<BacenDto>>
 
         if (merged.Count > 0)
         {
-            await _bacenCache.salvarAsync(request.Serie, request.DataInicial, request.DataFinal, merged, cancellationToken);
+            await _bacenCache.salvarAsync(request.Serie, merged, cancellationToken);
         }
 
         return _mapper.Map<List<BacenDto>>(merged);
