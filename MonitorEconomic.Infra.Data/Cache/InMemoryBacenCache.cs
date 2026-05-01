@@ -23,6 +23,9 @@ public class InMemoryBacenCache
             return null;
         }
 
+        if (entry.DataInicialCoberta > dataInicial.Date || entry.DataFinalCoberta < dataFinal.Date)
+            return null;
+
         var filtrado = entry.Registros
             .Where(r => r.Data.Date >= dataInicial.Date && r.Data.Date <= dataFinal.Date)
             .ToList();
@@ -37,15 +40,20 @@ public class InMemoryBacenCache
         var agora = DateTime.UtcNow;
         var expiraEmUtc = CalcularExpiracao(serie, agora);
 
+        var novaDataInicial = registros.Min(r => r.Data.Date);
+        var novaDataFinal = registros.Max(r => r.Data.Date);
+
         Entries.AddOrUpdate(
             serie,
-            _ => new CacheEntry(registros.ToList(), expiraEmUtc),
+            _ => new CacheEntry(registros.ToList(), expiraEmUtc, novaDataInicial, novaDataFinal),
             (_, existente) =>
             {
                 var datasExistentes = existente.Registros.Select(r => r.Data.Date).ToHashSet();
                 var novos = registros.Where(r => !datasExistentes.Contains(r.Data.Date));
                 var merged = existente.Registros.Concat(novos).OrderBy(r => r.Data).ToList();
-                return new CacheEntry(merged, expiraEmUtc);
+                var dataInicialCoberta = existente.DataInicialCoberta < novaDataInicial ? existente.DataInicialCoberta : novaDataInicial;
+                var dataFinalCoberta = existente.DataFinalCoberta > novaDataFinal ? existente.DataFinalCoberta : novaDataFinal;
+                return new CacheEntry(merged, expiraEmUtc, dataInicialCoberta, dataFinalCoberta);
             });
     }
 
@@ -87,5 +95,5 @@ public class InMemoryBacenCache
         return quinzeDias <= primeiroDiaDoProximoMes ? quinzeDias : primeiroDiaDoProximoMes;
     }
 
-    private sealed record CacheEntry(IReadOnlyList<BacenDomain> Registros, DateTime ExpiraEmUtc);
+    private sealed record CacheEntry(IReadOnlyList<BacenDomain> Registros, DateTime ExpiraEmUtc, DateTime DataInicialCoberta, DateTime DataFinalCoberta);
 }
