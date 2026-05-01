@@ -14,7 +14,7 @@ namespace MonitorEconomic.Tests.Infra;
 
 public class BacenHttpServiceTests
 {
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync usa cultura invariante ao parsear resposta, mesmo com cultura PT-BR ativa no thread")]
     public async Task ObterBacenAsync_ParsesResponseUsingInvariantCulture()
     {
         var originalCulture = CultureInfo.CurrentCulture;
@@ -49,7 +49,7 @@ public class BacenHttpServiceTests
         }
     }
 
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync sem URL template configurada lança InvalidOperationException")]
     public async Task ObterBacenAsync_WithoutTemplate_ThrowsInvalidOperationException()
     {
         var httpClient = new HttpClient(new FakeHttpMessageHandler("[]"));
@@ -60,7 +60,7 @@ public class BacenHttpServiceTests
             service.obterBacenAsync(BacenSerie.Ipc, new DateTime(2026, 4, 10), new DateTime(2026, 4, 11)));
     }
 
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync sem strategy registrada para a série lança InvalidOperationException")]
     public async Task ObterBacenAsync_WithoutStrategy_ThrowsInvalidOperationException()
     {
         var httpClient = new HttpClient(new FakeHttpMessageHandler("[]"));
@@ -74,7 +74,7 @@ public class BacenHttpServiceTests
             service.obterBacenAsync(BacenSerie.Ipc, new DateTime(2026, 4, 10), new DateTime(2026, 4, 11)));
     }
 
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync quando a requisição HTTP é cancelada, relaça OperationCanceledException")]
     public async Task ObterBacenAsync_WhenRequestIsCanceled_RethrowsOperationCanceledException()
     {
         var httpClient = new HttpClient(new ThrowingHttpMessageHandler(new OperationCanceledException()));
@@ -88,7 +88,7 @@ public class BacenHttpServiceTests
             service.obterBacenAsync(BacenSerie.Ipc, new DateTime(2026, 4, 10), new DateTime(2026, 4, 11)));
     }
 
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync com data inválida no payload da resposta lança BacenIntegrationException")]
     public async Task ObterBacenAsync_WithInvalidDatePayload_ThrowsBacenIntegrationException()
     {
         var httpClient = new HttpClient(new FakeHttpMessageHandler("""
@@ -104,7 +104,7 @@ public class BacenHttpServiceTests
             service.obterBacenAsync(BacenSerie.Ipc, new DateTime(2026, 4, 10), new DateTime(2026, 4, 11)));
     }
 
-    [Fact]
+    [Fact(DisplayName = "ObterBacenAsync com valor numérico inválido no payload da resposta lança BacenIntegrationException")]
     public async Task ObterBacenAsync_WithInvalidValuePayload_ThrowsBacenIntegrationException()
     {
         var httpClient = new HttpClient(new FakeHttpMessageHandler("""

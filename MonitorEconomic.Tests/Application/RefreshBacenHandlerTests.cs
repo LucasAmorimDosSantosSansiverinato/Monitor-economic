@@ -14,7 +14,7 @@ namespace MonitorEconomic.Tests.Application;
 
 public class RefreshBacenHandlerTests
 {
-    [Fact]
+    [Fact(DisplayName = "Quando o Bacen retorna dados, persiste cada registro no banco, atualiza o cache e retorna os DTOs mapeados")]
     public async Task Handle_PersistsFetchedData_RefreshesCache_AndReturnsDtos()
     {
         var repository = new Mock<IBacenRepository>();
@@ -46,7 +46,7 @@ public class RefreshBacenHandlerTests
         cache.VerifyAll();
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando o Bacen retorna lista vazia, atualiza o cache sem salvar no banco e retorna lista vazia")]
     public async Task Handle_WhenServiceReturnsEmptyList_StillRefreshesCacheAndReturnsEmptyDtos()
     {
         var repository = new Mock<IBacenRepository>(MockBehavior.Strict);

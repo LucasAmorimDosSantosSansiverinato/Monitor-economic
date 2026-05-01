@@ -15,7 +15,7 @@ namespace MonitorEconomic.Tests.Application;
 
 public class GetBacenHandlerTests
 {
-    [Fact]
+    [Fact(DisplayName = "Quando há cache válido, retorna dados do cache sem consultar banco ou Bacen")]
     public async Task Handle_UsesCacheBeforeDatabaseAndExternalService()
     {
         var cache = new Mock<IBacenCache>();
@@ -39,7 +39,7 @@ public class GetBacenHandlerTests
         bacenService.VerifyNoOtherCalls();
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando o banco cobre todo o período solicitado, não consulta o serviço Bacen")]
     public async Task Handle_BancoCoberturaTotal_NaoConsultaBacen()
     {
         // DB cobre o range completo (primeiro = dataInicial, último = dataFinal) → Bacen não é chamado
@@ -75,7 +75,7 @@ public class GetBacenHandlerTests
         cache.VerifyAll();
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando o banco está vazio, consulta o Bacen para o período completo e salva os dados")]
     public async Task Handle_BancoVazio_ConsultaBacenRangeCompleto()
     {
         var cache = new Mock<IBacenCache>();
@@ -113,7 +113,7 @@ public class GetBacenHandlerTests
         bacenService.Verify(s => s.obterBacenAsync(BacenSerie.Euro, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()), Times.Once);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando o banco cobre apenas o início do período, consulta o Bacen somente para a lacuna final")]
     public async Task Handle_BancoParcialNoFinal_ConsultaBacenSomenteLacunaFinal()
     {
         // DB tem dados de 2024-01-01 a 2024-01-15, usuário pede até 2024-01-31
@@ -161,7 +161,7 @@ public class GetBacenHandlerTests
         bacenService.Verify(s => s.obterBacenAsync(BacenSerie.Selic, new DateTime(2024, 1, 1), new DateTime(2024, 1, 31), It.IsAny<CancellationToken>()), Times.Never);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando cache, banco e Bacen não retornam dados para o período, retorna lista vazia")]
     public async Task Handle_ReturnsEmptyWhenCacheAndDatabaseAndBacenMiss()
     {
         var cache = new Mock<IBacenCache>();
@@ -190,7 +190,7 @@ public class GetBacenHandlerTests
         bacenService.VerifyAll();
     }
 
-    [Fact]
+    [Fact(DisplayName = "Quando o Bacen está indisponível e lança exceção, retorna os dados parciais existentes no banco")]
     public async Task Handle_ReturnsDatabaseDataWhenBacenIsUnavailable()
     {
         // DB tem dados mas Bacen está fora — deve retornar o que tem no banco

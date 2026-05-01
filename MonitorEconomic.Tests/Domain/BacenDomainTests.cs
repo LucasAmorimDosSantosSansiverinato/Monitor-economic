@@ -7,7 +7,7 @@ namespace MonitorEconomic.Tests.Domain;
 
 public class BacenDomainTests
 {
-    [Fact]
+    [Fact(DisplayName = "Construtor com ID explícito preserva o ID, série, data e valor informados")]
     public void Constructor_WithExplicitId_PreservesIdAndSerie()
     {
         var id = Guid.NewGuid();
@@ -21,7 +21,7 @@ public class BacenDomainTests
         Assert.Equal(0.65m, entity.Valor);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Construtor com data futura lança DomainException")]
     public void Constructor_WithFutureDate_ThrowsDomainException()
     {
         var futureDate = DateTime.UtcNow.AddDays(1);
@@ -31,7 +31,7 @@ public class BacenDomainTests
         Assert.Throws<DomainException>(action);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Construtor com ID vazio (Guid.Empty) lança DomainException")]
     public void Constructor_WithEmptyId_ThrowsDomainException()
     {
         var action = () => new BacenDomain(Guid.Empty, BacenSerie.Ipc, DateTime.UtcNow.Date, 0.65m);
@@ -39,7 +39,7 @@ public class BacenDomainTests
         Assert.Throws<DomainException>(action);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Construtor com série inválida (valor fora do enum) lança DomainException")]
     public void Constructor_WithInvalidSerie_ThrowsDomainException()
     {
         var action = () => new BacenDomain((BacenSerie)999, DateTime.UtcNow.Date, 0.65m);
@@ -47,7 +47,7 @@ public class BacenDomainTests
         Assert.Throws<DomainException>(action);
     }
 
-    [Fact]
+    [Fact(DisplayName = "Construtor com DateTime.MinValue como data lança DomainException")]
     public void Constructor_WithMinValueDate_ThrowsDomainException()
     {
         var action = () => new BacenDomain(BacenSerie.Ipc, DateTime.MinValue, 0.65m);
