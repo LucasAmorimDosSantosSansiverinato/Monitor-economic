@@ -2,6 +2,9 @@
 Orçamento:
 <img width="1623" height="282" alt="image" src="https://github.com/user-attachments/assets/1824b8d8-ee5e-44e5-b6a0-fd545c4eaea3" />
 
+<img width="1482" height="429" alt="image" src="https://github.com/user-attachments/assets/3aebdbbb-4cfc-4d61-b45e-4a76f153351d" />
+
+
 
 
 Arquitetura de soluções:
