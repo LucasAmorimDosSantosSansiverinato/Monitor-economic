@@ -7,9 +7,15 @@ Orçamento:
 
 
 
-Arquitetura de soluções:
+Arquitetura de soluções MVP:
 
-<img width="1938" height="1128" alt="image" src="https://github.com/user-attachments/assets/c6dde5f7-04b0-45b1-8be4-4bfd9deedb96" />
+<img width="1205" height="970" alt="image" src="https://github.com/user-attachments/assets/902ef379-656d-45c2-b37f-cbbabab8b313" />
+
+
+Arquitetura de soluções Final:
+
+<img width="1934" height="1082" alt="image" src="https://github.com/user-attachments/assets/7ad00da4-a1aa-4c3a-8b95-840f999fa780" />
+
 
 
 
