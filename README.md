@@ -1,20 +1,16 @@
 
-Orçamento:
-<img width="1623" height="282" alt="image" src="https://github.com/user-attachments/assets/1824b8d8-ee5e-44e5-b6a0-fd545c4eaea3" />
-
-<img width="1482" height="429" alt="image" src="https://github.com/user-attachments/assets/3aebdbbb-4cfc-4d61-b45e-4a76f153351d" />
-
-
-
-
 Arquitetura de soluções MVP:
 
 <img width="1205" height="970" alt="image" src="https://github.com/user-attachments/assets/902ef379-656d-45c2-b37f-cbbabab8b313" />
+
+<img width="1623" height="282" alt="image" src="https://github.com/user-attachments/assets/1824b8d8-ee5e-44e5-b6a0-fd545c4eaea3" />
 
 
 Arquitetura de soluções Final:
 
 <img width="1934" height="1082" alt="image" src="https://github.com/user-attachments/assets/7ad00da4-a1aa-4c3a-8b95-840f999fa780" />
+
+<img width="1482" height="429" alt="image" src="https://github.com/user-attachments/assets/3aebdbbb-4cfc-4d61-b45e-4a76f153351d" />
 
 
 
