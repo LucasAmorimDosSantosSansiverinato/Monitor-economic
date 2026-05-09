@@ -5,7 +5,8 @@ Orçamento:
 
 Arquitetura de soluções:
 
-<img width="1976" height="1059" alt="image" src="https://github.com/user-attachments/assets/6ffc96fa-dfde-4940-8184-4f7072e7b925" />
+<img width="1676" height="1093" alt="image" src="https://github.com/user-attachments/assets/b5618190-3a03-4d01-8add-898680eb1d2f" />
+
 
 
 
